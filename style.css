@@ -245,6 +245,7 @@ body.is-light-mode .stream-drawer {
   z-index: 1;
   pointer-events: none;
   transform: translate3d(0, 0, 0);
+  contain: layout paint style;
 }
 
 .bg-overlay-dark,
@@ -277,6 +278,7 @@ body.is-light-mode .stream-drawer {
   max-width: 280px;
   padding: 16px 14px;
   border-radius: 28px;
+  contain: layout paint style;
   display: flex;
   flex-direction: column;
   gap: 10px;

@@ -4,6 +4,14 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
   <title>Atmospheres Player</title>
+  <meta name="theme-color" content="#120f13" />
+  <meta name="mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <meta name="apple-mobile-web-app-title" content="Atmospheres" />
+  <link rel="manifest" href="manifest.json" type="application/manifest+json" />
+  <link rel="icon" type="image/png" href="icon-192.png" />
+  <link rel="apple-touch-icon" href="icon-192.png" />
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -31,6 +39,7 @@
     }
 
     .playlist-item {
+      position: relative;
       display: flex;
       align-items: center;
       gap: 10px;
@@ -43,6 +52,10 @@
       transform: translateY(10px);
       animation: fadeSlideIn 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
       transition: background 0s, border-color 0s, color 0s;
+    }
+
+    .playlist-item > .playlist-item-info {
+      min-width: 0;
     }
 
     @keyframes fadeSlideIn {
@@ -106,6 +119,52 @@
       font-size: 10px;
       color: rgba(255, 255, 255, 0.45);
       font-variant-numeric: tabular-nums;
+    }
+
+    .playlist-item-del {
+      position: absolute;
+      top: 2px;
+      right: 4px;
+      width: 16px;
+      height: 16px;
+      border: none;
+      border-radius: 0;
+      background: transparent;
+      color: #ff2d2d;
+      font-size: 13px;
+      font-weight: 700;
+      line-height: 1;
+      cursor: pointer;
+      outline: none;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.12s ease;
+      z-index: 2;
+    }
+
+    .playlist-item:hover .playlist-item-del,
+    .playlist-item:focus-within .playlist-item-del,
+    .playlist-item-del:focus {
+      opacity: 0.55;
+      pointer-events: auto;
+    }
+
+    .playlist-item-del:hover {
+      opacity: 1;
+    }
+
+    .playlist-item-del:active {
+      transform: scale(0.9);
+      color: #ff5555;
+      opacity: 1;
+    }
+
+    body.is-light-mode .playlist-item-del {
+      color: #e00000;
     }
 
     .playlist-hint {
@@ -707,6 +766,49 @@
       background: rgba(255, 255, 255, 0.94);
     }
 
+    body.phone-opt .chamber-dark::before,
+    body.phone-opt .chamber-light::before,
+    body.phone-opt .cover-lens::before {
+      display: none !important;
+    }
+
+    body.phone-opt .cover-img {
+      animation: none !important;
+      animation-play-state: paused !important;
+    }
+
+    body.phone-opt .island-dot.is-active {
+      animation: none !important;
+      transform: none;
+      opacity: 1;
+    }
+
+    body.phone-opt .playlist-item {
+      animation: none !important;
+      opacity: 1;
+      transform: none;
+    }
+
+    body.phone-opt .lyrics-float .lyric-line {
+      transition: none !important;
+    }
+
+    body.phone-opt .bar {
+      animation: none !important;
+      transform: scaleY(0.7);
+    }
+
+    body.phone-opt .bar:nth-child(1),
+    body.phone-opt .bar:nth-child(2),
+    body.phone-opt .bar:nth-child(3) {
+      animation-delay: 0s !important;
+    }
+
+    body.phone-opt .bg-layer {
+      image-rendering: auto;
+      filter: none;
+    }
+
     .drawer-settings-btn.is-active {
       background: rgba(255, 255, 255, 0.22);
       border-color: rgba(255, 255, 255, 0.4);
@@ -922,6 +1024,14 @@
         <button class="settings-toggle is-on" id="glassToggle" type="button" role="switch" aria-checked="true" title="Включить/выключить LiquidGlass"></button>
       </div>
       <div class="settings-row">
+        <span id="optLabel">Оптимизация телефона</span>
+        <button class="settings-toggle" id="optToggle" type="button" role="switch" aria-checked="false" title="Меньше эффектов — плавнее на телефоне"></button>
+      </div>
+      <div class="settings-row">
+        <span id="silentDeleteLabel">Без предупреждения при удалении</span>
+        <button class="settings-toggle" id="silentDeleteToggle" type="button" role="switch" aria-checked="false" title="Удалять треки из плейлиста без подтверждения"></button>
+      </div>
+      <div class="settings-row">
         <span id="langLabel">Язык</span>
         <div class="lang-switch" role="group" aria-label="Language">
           <button class="lang-btn is-on" id="langRuBtn" type="button" data-lang="ru">RU</button>
@@ -935,6 +1045,10 @@
       <div class="settings-row">
         <span id="clearLabel">Очистить плейлист</span>
         <button class="settings-danger-btn" id="clearPlaylistBtn" type="button">Удалить</button>
+      </div>
+      <div class="settings-row">
+        <span id="installLabel">Установить приложение</span>
+        <button class="settings-secondary-btn" id="installAppBtn" type="button">Установить</button>
       </div>
       <button class="settings-save-btn" id="saveSettingsBtn" type="button">Сохранить настройки</button>
       <div class="settings-hint" id="settingsHint"></div>
@@ -1375,7 +1489,7 @@
       try {
         const sc = await searchSoundcloudPage(query, { first: false });
         const merged = dedupeTracks([...(searchResults || []), ...sc]);
-        searchResults = merged;
+        searchResults = merged.length ? merged : null;
         updateSearchHint(merged);
         renderList();
         return merged;
@@ -1449,10 +1563,11 @@
 
     function startYtPoll() {
       stopYtPoll();
+      const interval = document.body.classList.contains('phone-opt') ? 500 : 250;
       ytPollTimer = setInterval(() => {
         if (activeEngine !== 'yt') return;
         renderProgress();
-      }, 250);
+      }, interval);
     }
 
     function stopYtPoll() {
@@ -1731,7 +1846,11 @@
     const settingsPanel = document.getElementById('settingsPanel');
     const animToggle = document.getElementById('animToggle');
     const glassToggle = document.getElementById('glassToggle');
+    const optToggle = document.getElementById('optToggle');
+    const silentDeleteToggle = document.getElementById('silentDeleteToggle');
     const animLabel = document.getElementById('animLabel');
+    const optLabel = document.getElementById('optLabel');
+    const silentDeleteLabel = document.getElementById('silentDeleteLabel');
     const langLabel = document.getElementById('langLabel');
     const bgLabel = document.getElementById('bgLabel');
     const clearLabel = document.getElementById('clearLabel');
@@ -1739,6 +1858,8 @@
     const langEnBtn = document.getElementById('langEnBtn');
     const changeBgBtn = document.getElementById('changeBgBtn');
     const clearPlaylistBtn = document.getElementById('clearPlaylistBtn');
+    const installAppBtn = document.getElementById('installAppBtn');
+    const installLabel = document.getElementById('installLabel');
     const bgLayer = document.getElementById('bgLayer');
     const saveSettingsBtn = document.getElementById('saveSettingsBtn');
     const settingsHint = document.getElementById('settingsHint');
@@ -1769,8 +1890,13 @@
       'https://images.unsplash.com/photo-1507400492013-162706c8c05e?q=80&w=1600&auto=format&fit=crop',
       'https://images.unsplash.com/photo-1475274047050-1d0c0975c63e?q=80&w=1600&auto=format&fit=crop'
     ];
-    let appSettings = { animations: true, liquidglass: true, lang: 'ru', bgIndex: 0 };
+    let appSettings = { animations: true, liquidglass: true, lang: 'ru', bgIndex: 0, phoneOpt: null, silentDelete: false };
     let btnState = 'play';
+    const isLikelyPhone = () => (
+      window.matchMedia('(pointer: coarse)').matches ||
+      navigator.maxTouchPoints > 1 ||
+      /Android|iPhone|iPad|iPod|Mobile/i.test(navigator.userAgent)
+    );
 
     const I18N = {
       ru: {
@@ -1795,10 +1921,19 @@
         findTrack: 'Найди трек',
         animations: 'Анимации',
         language: 'Язык',
+        phoneOpt: 'Оптимизация телефона',
+        silentDelete: 'Без предупреждения при удалении',
+        silentDeleteHint: 'Удалять треки из плейлиста без подтверждения',
         background: 'Фон',
         changeBg: 'Сменить',
         clearPlaylist: 'Очистить плейлист',
         delete: 'Удалить',
+        installApp: 'Установить приложение',
+        installBtn: 'Установить',
+        installInstalled: 'Уже установлено',
+        installHint: 'Chrome: ⋮ → «Установить приложение» / «Добавить на главный экран»',
+        installReady: 'Готово — жми «Установить»',
+        installWait: 'Готовим установку… подожди секунду',
         saveSettings: 'Сохранить настройки',
         settingsSaved: 'Настройки сохранены',
         saveFailed: 'Не удалось сохранить',
@@ -1806,6 +1941,7 @@
         error: 'Ошибка',
         confirmSave: 'Вы точно хотите сохранить настройки?',
         confirmClear: 'Удалить все треки из плейлиста?',
+        confirmDelete: (title) => `Удалить трек «${title}» из плейлиста?`,
         yes: 'Да',
         no: 'Нет',
         regionMsg: 'Трек запрещён в вашем регионе',
@@ -1847,10 +1983,19 @@
         findTrack: 'Find a track',
         animations: 'Animations',
         language: 'Language',
+        phoneOpt: 'Phone optimization',
+        silentDelete: 'Delete without warning',
+        silentDeleteHint: 'Remove playlist tracks without confirmation',
         background: 'Background',
         changeBg: 'Change',
         clearPlaylist: 'Clear playlist',
         delete: 'Delete',
+        installApp: 'Install app',
+        installBtn: 'Install',
+        installInstalled: 'Already installed',
+        installHint: 'Chrome: ⋮ → Install app / Add to Home screen',
+        installReady: 'Ready — tap Install',
+        installWait: 'Preparing install… wait a second',
         saveSettings: 'Save settings',
         settingsSaved: 'Settings saved',
         saveFailed: 'Failed to save',
@@ -1858,6 +2003,7 @@
         error: 'Error',
         confirmSave: 'Are you sure you want to save settings?',
         confirmClear: 'Delete all tracks from the playlist?',
+        confirmDelete: (title) => `Delete track «${title}» from the playlist?`,
         yes: 'Yes',
         no: 'No',
         regionMsg: 'Track not available in your region',
@@ -1947,11 +2093,24 @@
       if (searchInput) searchInput.placeholder = t('searchPlaceholder');
       if (searchBtn) searchBtn.textContent = t('find');
       if (animLabel) animLabel.textContent = t('animations');
+      if (optLabel) optLabel.textContent = t('phoneOpt');
+      if (silentDeleteLabel) silentDeleteLabel.textContent = t('silentDelete');
+      if (silentDeleteToggle) silentDeleteToggle.title = t('silentDeleteHint');
       if (langLabel) langLabel.textContent = t('language');
       if (bgLabel) bgLabel.textContent = t('background');
       if (changeBgBtn) changeBgBtn.textContent = t('changeBg');
       if (clearLabel) clearLabel.textContent = t('clearPlaylist');
       if (clearPlaylistBtn) clearPlaylistBtn.textContent = t('delete');
+      if (installLabel) installLabel.textContent = t('installApp');
+      if (installAppBtn) {
+        if (isAppInstalled()) {
+          installAppBtn.textContent = t('installInstalled');
+          installAppBtn.disabled = true;
+        } else {
+          installAppBtn.textContent = t('installBtn');
+          installAppBtn.disabled = false;
+        }
+      }
       if (themeBtn) themeBtn.title = t('changeTheme');
       if (prevBtn) prevBtn.title = t('prevTrack');
       if (nextBtn) nextBtn.title = t('nextTrack');
@@ -1999,7 +2158,9 @@
               lang: data.lang === 'en' ? 'en' : 'ru',
               bgIndex: Number.isFinite(data.bgIndex)
                 ? Math.abs(Math.trunc(data.bgIndex)) % BG_PRESETS.length
-                : 0
+                : 0,
+              phoneOpt: data.phoneOpt === true ? true : data.phoneOpt === false ? false : null,
+              silentDelete: data.silentDelete === true
             };
           }
         }
@@ -2010,12 +2171,17 @@
     function applyBackground() {
       if (!bgLayer) return;
       const idx = ((appSettings.bgIndex || 0) % BG_PRESETS.length + BG_PRESETS.length) % BG_PRESETS.length;
-      bgLayer.src = BG_PRESETS[idx];
+      const base = BG_PRESETS[idx];
+      const w = appSettings.phoneOpt ? 900 : 1600;
+      bgLayer.src = base.replace('w=1600', `w=${w}`);
     }
 
     function applyAppSettings() {
+      const phoneOpt = appSettings.phoneOpt === true || (appSettings.phoneOpt == null && isLikelyPhone());
+      appSettings.phoneOpt = phoneOpt;
       document.body.classList.toggle('no-animations', !appSettings.animations);
       document.body.classList.toggle('no-liquidglass', !appSettings.liquidglass);
+      document.body.classList.toggle('phone-opt', phoneOpt);
       if (animToggle) {
         animToggle.classList.toggle('is-on', !!appSettings.animations);
         animToggle.setAttribute('aria-checked', appSettings.animations ? 'true' : 'false');
@@ -2023,6 +2189,14 @@
       if (glassToggle) {
         glassToggle.classList.toggle('is-on', !!appSettings.liquidglass);
         glassToggle.setAttribute('aria-checked', appSettings.liquidglass ? 'true' : 'false');
+      }
+      if (optToggle) {
+        optToggle.classList.toggle('is-on', phoneOpt);
+        optToggle.setAttribute('aria-checked', phoneOpt ? 'true' : 'false');
+      }
+      if (silentDeleteToggle) {
+        silentDeleteToggle.classList.toggle('is-on', !!appSettings.silentDelete);
+        silentDeleteToggle.setAttribute('aria-checked', appSettings.silentDelete ? 'true' : 'false');
       }
       applyBackground();
       applyLang();
@@ -2092,6 +2266,23 @@
       markSettingsDirty();
     });
 
+    if (optToggle) {
+      optToggle.addEventListener('click', () => {
+        const next = !(appSettings.phoneOpt === true || (appSettings.phoneOpt == null && isLikelyPhone()));
+        appSettings.phoneOpt = next;
+        applyAppSettings();
+        markSettingsDirty();
+      });
+    }
+
+    if (silentDeleteToggle) {
+      silentDeleteToggle.addEventListener('click', () => {
+        appSettings.silentDelete = !appSettings.silentDelete;
+        applyAppSettings();
+        markSettingsDirty();
+      });
+    }
+
     if (changeBgBtn) {
       changeBgBtn.addEventListener('click', () => {
         appSettings.bgIndex = ((appSettings.bgIndex || 0) + 1) % BG_PRESETS.length;
@@ -2110,6 +2301,108 @@
 
     langRuBtn.addEventListener('click', () => setLang('ru'));
     langEnBtn.addEventListener('click', () => setLang('en'));
+
+    let deferredInstallPrompt = null;
+    let installPromptReady = false;
+
+    function isAppInstalled() {
+      if (window.matchMedia('(display-mode: standalone)').matches) return true;
+      if (window.navigator.standalone === true) return true;
+      return false;
+    }
+
+    window.addEventListener('beforeinstallprompt', (e) => {
+      e.preventDefault();
+      deferredInstallPrompt = e;
+      installPromptReady = true;
+      if (settingsHint && settingsHint.textContent === t('installWait')) {
+        settingsHint.textContent = t('installReady');
+      }
+      if (installAppBtn && !isAppInstalled()) {
+        installAppBtn.disabled = false;
+        installAppBtn.textContent = t('installBtn');
+      }
+    });
+
+    window.addEventListener('appinstalled', () => {
+      deferredInstallPrompt = null;
+      installPromptReady = false;
+      if (settingsHint) settingsHint.textContent = t('installInstalled');
+      applyLang();
+    });
+
+    async function waitForInstallPrompt(ms) {
+      if (deferredInstallPrompt) return deferredInstallPrompt;
+      return new Promise((resolve) => {
+        let done = false;
+        const finish = (val) => {
+          if (done) return;
+          done = true;
+          window.removeEventListener('beforeinstallprompt', onPrompt);
+          resolve(val);
+        };
+        const onPrompt = (e) => {
+          e.preventDefault();
+          deferredInstallPrompt = e;
+          installPromptReady = true;
+          finish(e);
+        };
+        window.addEventListener('beforeinstallprompt', onPrompt);
+        setTimeout(() => finish(deferredInstallPrompt), ms);
+      });
+    }
+
+    async function showInstallPrompt() {
+      if (isAppInstalled()) {
+        if (settingsHint) settingsHint.textContent = t('installInstalled');
+        return;
+      }
+
+      if (settingsHint) settingsHint.textContent = t('installWait');
+
+      if (!deferredInstallPrompt) {
+        try {
+          if ('serviceWorker' in navigator) {
+            await navigator.serviceWorker.register('sw.js');
+            if (navigator.serviceWorker.ready) await navigator.serviceWorker.ready;
+          }
+        } catch (_) {}
+        await waitForInstallPrompt(2500);
+      }
+
+      const promptEvent = deferredInstallPrompt;
+      if (!promptEvent) {
+        if (settingsHint) settingsHint.textContent = t('installHint');
+        return;
+      }
+
+      try {
+        promptEvent.prompt();
+        const choice = await promptEvent.userChoice;
+        deferredInstallPrompt = null;
+        installPromptReady = false;
+        if (settingsHint) {
+          settingsHint.textContent = choice && choice.outcome === 'accepted'
+            ? t('installInstalled')
+            : t('installHint');
+        }
+      } catch (_) {
+        if (settingsHint) settingsHint.textContent = t('installHint');
+      }
+      applyLang();
+    }
+
+    if (installAppBtn) {
+      installAppBtn.addEventListener('click', (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        showInstallPrompt();
+      });
+    }
+
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.register('sw.js').catch(() => {});
+    }
 
     async function clearAllTracks() {
       const ok = await confirmDialog(t('confirmClear'));
@@ -2141,6 +2434,56 @@
     }
 
     clearPlaylistBtn.addEventListener('click', clearAllTracks);
+
+    function stopPlaybackUi() {
+      try { audio.pause(); } catch (_) {}
+      try {
+        audio.removeAttribute('src');
+        audio.load();
+      } catch (_) {}
+      try { stopYt(); } catch (_) {}
+      activeEngine = 'sc';
+      pendingTrack = null;
+      hideFloatingLyrics();
+      setStatus('');
+      trackTitle.textContent = t('findTrack');
+      trackTitle.dataset.placeholder = '1';
+      trackArtist.textContent = 'SoundCloud · YouTube';
+      setBtnState('play');
+      updateSystemMediaSession();
+    }
+
+    async function deleteTrack(track) {
+      if (!track || !track.uid) return;
+
+      const plIndex = playlist.findIndex(x => x.uid === track.uid);
+      if (plIndex < 0) return;
+
+      if (!appSettings.silentDelete) {
+        const ok = await confirmDialog(tf('confirmDelete', track.title));
+        if (!ok) return;
+      }
+
+      const wasCurrent = plIndex === currentIndex && !(searchResults && searchResults.length);
+
+      playlist.splice(plIndex, 1);
+      if (plIndex < currentIndex) currentIndex -= 1;
+      if (currentIndex >= playlist.length) currentIndex = Math.max(0, playlist.length - 1);
+      savePlaylist();
+
+      if (wasCurrent || !playlist.length) {
+        stopPlaybackUi();
+        currentIndex = 0;
+      }
+
+      if (!playlist.length) {
+        playlistHint.textContent = t('playlistEmpty');
+      }
+      renderList();
+      if (playlist.length) {
+        playlistHint.textContent = tf('playlist', playlist.length);
+      }
+    }
 
     saveSettingsBtn.addEventListener('click', async () => {
       const okConfirm = await confirmDialog(t('confirmSave'));
@@ -2285,7 +2628,22 @@
         dur.textContent = track.duration ? formatTime(track.duration) : '';
 
         meta.append(srcBadge, dur);
+
         item.append(img, info, meta);
+
+        if (!showingResults) {
+          const delBtn = document.createElement('button');
+          delBtn.type = 'button';
+          delBtn.className = 'playlist-item-del';
+          delBtn.textContent = '×';
+          delBtn.title = t('delete');
+          delBtn.setAttribute('aria-label', t('delete'));
+          delBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            deleteTrack(track);
+          });
+          item.appendChild(delBtn);
+        }
 
         item.addEventListener('click', () => {
           if (showingResults) {
@@ -2477,8 +2835,14 @@
 
     audio.addEventListener('play', () => setPlayingState(true));
     audio.addEventListener('pause', () => setPlayingState(false));
+    let lastProgressTs = 0;
     audio.addEventListener('timeupdate', () => {
-      if (!isDragging) renderProgress();
+      if (isDragging) return;
+      const now = performance.now();
+      const minGap = document.body.classList.contains('phone-opt') ? 250 : 0;
+      if (minGap && now - lastProgressTs < minGap) return;
+      lastProgressTs = now;
+      renderProgress();
     });
     audio.addEventListener('loadedmetadata', () => {
       durTimeEl.textContent = formatTime(audio.duration);
