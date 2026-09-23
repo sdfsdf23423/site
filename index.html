@@ -1564,9 +1564,12 @@
     function startYtPoll() {
       stopYtPoll();
       const interval = document.body.classList.contains('phone-opt') ? 500 : 250;
+      let msTick = 0;
       ytPollTimer = setInterval(() => {
         if (activeEngine !== 'yt') return;
         renderProgress();
+        msTick += 1;
+        if (msTick % 4 === 0) updateSystemMediaSession(true);
       }, interval);
     }
 
@@ -2428,7 +2431,7 @@
       playlistHint.textContent = t('playlistEmpty');
       searchInput.value = '';
       renderList();
-      updateSystemMediaSession();
+      updateSystemMediaSession(true);
       settingsHint.textContent = '';
       markSettingsDirty();
     }
@@ -2450,7 +2453,7 @@
       trackTitle.dataset.placeholder = '1';
       trackArtist.textContent = 'SoundCloud · YouTube';
       setBtnState('play');
-      updateSystemMediaSession();
+      updateSystemMediaSession(true);
     }
 
     async function deleteTrack(track) {
@@ -2803,19 +2806,125 @@
     }
     window.addEventListener('resize', refreshMetrics, { passive: true });
 
-    function updateSystemMediaSession() {
+    let msHandlersBound = false;
+    let msMetadataKey = '';
+
+    function getCurrentTrackMeta() {
+      const tr = playlist[currentIndex] || pendingTrack;
+      const title = (tr && tr.title) || (trackTitle.dataset.placeholder === '1' ? '' : trackTitle.textContent) || '';
+      const artist = (tr && tr.artist) || (trackArtist.textContent || '');
+      const cover = (tr && tr.cover) || (coverImg.src && coverImg.src !== location.href ? coverImg.src : '');
+      return { title, artist, cover };
+    }
+
+    function updateSystemMediaSession(force) {
       if (!('mediaSession' in navigator)) return;
       try {
-        navigator.mediaSession.metadata = new MediaMetadata({
-          title: trackTitle.textContent,
-          artist: trackArtist.textContent,
-          artwork: coverImg.src ? [{ src: coverImg.src, sizes: '512x512', type: 'image/jpeg' }] : []
+        const ms = navigator.mediaSession;
+        const { title, artist, cover } = getCurrentTrackMeta();
+        const playing = btnState === 'playing' || (!audio.paused && activeEngine === 'sc');
+        const ytPlaying = activeEngine === 'yt' && ytPlayer &&
+          typeof ytPlayer.getPlayerState === 'function' && ytPlayer.getPlayerState() === 1;
+        const isPlaying = playing || ytPlaying;
+        const state = isPlaying ? 'playing' : (btnState === 'loading' ? 'playing' : 'paused');
+
+        if (ms.playbackState !== state) ms.playbackState = state;
+
+        const key = `${title}|${artist}|${cover}|${state}`;
+        if (!force && key === msMetadataKey) {
+          syncMediaPosition();
+          return;
+        }
+        msMetadataKey = key;
+
+        const artwork = [];
+        if (cover) {
+          artwork.push({ src: cover, sizes: '512x512', type: 'image/jpeg' });
+          artwork.push({ src: cover, sizes: '256x256', type: 'image/jpeg' });
+        }
+        artwork.push({ src: 'icon-512.png', sizes: '512x512', type: 'image/png' });
+        artwork.push({ src: 'icon-192.png', sizes: '192x192', type: 'image/png' });
+
+        ms.metadata = new MediaMetadata({
+          title: title || 'Atmospheres Player',
+          artist: artist || 'Atmospheres',
+          album: 'Atmospheres Player',
+          artwork
         });
-        navigator.mediaSession.setActionHandler('play', () => togglePlay(true));
-        navigator.mediaSession.setActionHandler('pause', () => togglePlay(false));
-        navigator.mediaSession.setActionHandler('previoustrack', () => skipTrack(-1));
-        navigator.mediaSession.setActionHandler('nexttrack', () => skipTrack(1));
+
+        if (!msHandlersBound) {
+          ms.setActionHandler('play', () => togglePlay(true));
+          ms.setActionHandler('pause', () => togglePlay(false));
+          ms.setActionHandler('previoustrack', () => skipTrack(-1));
+          ms.setActionHandler('nexttrack', () => skipTrack(1));
+          try {
+            ms.setActionHandler('stop', () => {
+              togglePlay(false);
+              setPlayingState(false);
+            });
+          } catch (_) {}
+          try {
+            ms.setActionHandler('seekbackward', (d) => {
+              const amount = (d && d.seekOffset) || 10;
+              seekBy(-amount);
+            });
+          } catch (_) {}
+          try {
+            ms.setActionHandler('seekforward', (d) => {
+              const amount = (d && d.seekOffset) || 10;
+              seekBy(amount);
+            });
+          } catch (_) {}
+          try {
+            ms.setActionHandler('seekto', (d) => {
+              if (d && typeof d.seekTime === 'number') seekTo(d.seekTime);
+            });
+          } catch (_) {}
+          msHandlersBound = true;
+        }
+
+        syncMediaPosition();
       } catch (_) {}
+    }
+
+    function syncMediaPosition() {
+      if (!('mediaSession' in navigator) || !navigator.mediaSession.setPositionState) return;
+      try {
+        const duration = getDuration();
+        if (!duration || !isFinite(duration) || duration <= 0) return;
+        let position = 0;
+        if (activeEngine === 'yt' && ytPlayer && typeof ytPlayer.getCurrentTime === 'function') {
+          position = ytPlayer.getCurrentTime() || 0;
+        } else {
+          position = audio.currentTime || 0;
+        }
+        position = Math.min(Math.max(0, position), duration);
+        navigator.mediaSession.setPositionState({
+          duration,
+          position,
+          playbackRate: 1
+        });
+      } catch (_) {}
+    }
+
+    function seekTo(sec) {
+      if (!getDuration()) return;
+      if (activeEngine === 'yt') {
+        if (ytPlayer && typeof ytPlayer.seekTo === 'function') {
+          try { ytPlayer.seekTo(sec, true); } catch (_) {}
+        }
+        return;
+      }
+      try { audio.currentTime = sec; } catch (_) {}
+      renderProgress();
+      syncMediaPosition();
+    }
+
+    function seekBy(delta) {
+      const cur = activeEngine === 'yt'
+        ? (ytPlayer && ytPlayer.getCurrentTime ? (ytPlayer.getCurrentTime() || 0) : 0)
+        : (audio.currentTime || 0);
+      seekTo(Math.max(0, cur + delta));
     }
 
     function setPlayingState(playing) {
@@ -2824,12 +2933,13 @@
         setBtnState('playing');
         streamDot.classList.add('is-active');
         coverImg.style.animationPlayState = 'running';
-        updateSystemMediaSession();
+        updateSystemMediaSession(true);
       } else {
         soundBars.classList.add('is-paused');
         setBtnState('paused');
         streamDot.classList.remove('is-active');
         coverImg.style.animationPlayState = 'paused';
+        updateSystemMediaSession(true);
       }
     }
 
@@ -2843,6 +2953,7 @@
       if (minGap && now - lastProgressTs < minGap) return;
       lastProgressTs = now;
       renderProgress();
+      syncMediaPosition();
     });
     audio.addEventListener('loadedmetadata', () => {
       durTimeEl.textContent = formatTime(audio.duration);
@@ -2879,7 +2990,7 @@
       if (track.duration) durTimeEl.textContent = formatTime(track.duration);
       loadLyrics(track.artist, track.title);
       renderList();
-      updateSystemMediaSession();
+      updateSystemMediaSession(true);
     }
 
     async function playTrack(track) {
