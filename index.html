@@ -189,12 +189,10 @@
       padding: 0 16px;
       margin-bottom: 4px;
       opacity: 0;
-      filter: blur(8px);
-      transform: translate3d(0, -8px, 0);
+      transform: translate3d(0, -6px, 0);
       transition:
-        opacity 0.4s ease,
-        filter 0.4s ease,
-        transform 0.45s cubic-bezier(0.16, 1, 0.3, 1);
+        opacity 0.35s ease,
+        transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
     }
 
     .lyrics-float[hidden] {
@@ -203,14 +201,45 @@
 
     .lyrics-float.is-visible {
       opacity: 1;
-      filter: blur(0);
       transform: translate3d(0, 0, 0);
     }
 
     .lyrics-float.is-leaving {
       opacity: 0;
-      filter: blur(10px);
-      transform: translate3d(0, -10px, 0);
+      transform: translate3d(0, -8px, 0);
+    }
+
+    @keyframes lyricLineIn {
+      0% {
+        opacity: 0;
+        transform: translate3d(0, 10px, 0);
+      }
+      100% {
+        opacity: 1;
+        transform: translate3d(0, 0, 0);
+      }
+    }
+
+    @keyframes lyricLineInSub {
+      0% {
+        opacity: 0;
+        transform: translate3d(0, 6px, 0);
+      }
+      100% {
+        opacity: 0.45;
+        transform: translate3d(0, 0, 0);
+      }
+    }
+
+    .lyric-line.is-swap {
+      animation: lyricLineIn 0.42s cubic-bezier(0.22, 1, 0.36, 1) both;
+      will-change: opacity, transform;
+    }
+
+    .lyric-line.sub.is-swap {
+      animation-name: lyricLineInSub;
+      animation-duration: 0.4s;
+      animation-delay: 0.04s;
     }
 
     .stage {
@@ -234,8 +263,8 @@
         0 2px 18px rgba(0, 0, 0, 0.55);
       text-align: center;
       opacity: 0;
-      transform: translateY(-8px);
-      transition: opacity 0.35s ease, transform 0.35s ease;
+      transform: translate3d(0, -6px, 0);
+      transition: opacity 0.3s ease, transform 0.35s ease;
       display: -webkit-box;
       -webkit-line-clamp: 3;
       -webkit-box-orient: vertical;
@@ -244,20 +273,20 @@
 
     .lyrics-float.is-visible .lyric-line {
       opacity: 1;
-      transform: translateY(0);
+      transform: translate3d(0, 0, 0);
     }
 
     .lyrics-float.is-visible .lyric-line.sub {
       opacity: 0.45;
-      transform: translateY(0);
-      transition-delay: 0.08s;
+      transform: translate3d(0, 0, 0);
+      transition-delay: 0.06s;
     }
 
     .lyric-line.sub {
       font-size: clamp(13px, 3.4vw, 16px);
       font-weight: 500;
       color: rgba(255, 255, 255, 0.85);
-      transition-delay: 0.1s;
+      transition-delay: 0.08s;
     }
 
     body.is-light-mode .lyric-line {
@@ -597,6 +626,34 @@
       color: rgba(26, 22, 24, 0.8);
     }
 
+    .scale-controls {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      flex-shrink: 0;
+    }
+
+    .scale-step-btn {
+      min-width: 28px;
+      padding: 5px 8px;
+      font-size: 13px;
+      line-height: 1;
+    }
+
+    .scale-value {
+      min-width: 42px;
+      text-align: center;
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.03em;
+      color: rgba(255, 255, 255, 0.85);
+      font-variant-numeric: tabular-nums;
+    }
+
+    body.is-light-mode .scale-value {
+      color: rgba(26, 22, 24, 0.8);
+    }
+
     .settings-danger-btn {
       padding: 5px 10px;
       border-radius: 10px;
@@ -791,6 +848,7 @@
 
     body.phone-opt .lyrics-float .lyric-line {
       transition: none !important;
+      animation: none !important;
     }
 
     body.phone-opt .bar {
@@ -1026,6 +1084,22 @@
       <div class="settings-row">
         <span id="optLabel">Оптимизация телефона</span>
         <button class="settings-toggle" id="optToggle" type="button" role="switch" aria-checked="false" title="Меньше эффектов — плавнее на телефоне"></button>
+      </div>
+      <div class="settings-row">
+        <span id="scaleLabel">Масштаб</span>
+        <div class="scale-controls" role="group" aria-label="Scale">
+          <button class="settings-secondary-btn scale-step-btn" id="scaleDownBtn" type="button" title="Уменьшить масштаб">−</button>
+          <span class="scale-value" id="scaleValue">100%</span>
+          <button class="settings-secondary-btn scale-step-btn" id="scaleUpBtn" type="button" title="Увеличить масштаб">+</button>
+        </div>
+      </div>
+      <div class="settings-row">
+        <span id="lyricOffsetLabel">Сдвиг лирики</span>
+        <div class="scale-controls" role="group" aria-label="Lyric offset">
+          <button class="settings-secondary-btn scale-step-btn" id="lyricOffsetDownBtn" type="button" title="Лирика позже">−</button>
+          <span class="scale-value" id="lyricOffsetValue">0.0s</span>
+          <button class="settings-secondary-btn scale-step-btn" id="lyricOffsetUpBtn" type="button" title="Лирика раньше">+</button>
+        </div>
       </div>
       <div class="settings-row">
         <span id="silentDeleteLabel">Без предупреждения при удалении</span>
@@ -1851,6 +1925,14 @@
     const glassToggle = document.getElementById('glassToggle');
     const optToggle = document.getElementById('optToggle');
     const silentDeleteToggle = document.getElementById('silentDeleteToggle');
+    const scaleLabel = document.getElementById('scaleLabel');
+    const scaleValue = document.getElementById('scaleValue');
+    const scaleDownBtn = document.getElementById('scaleDownBtn');
+    const scaleUpBtn = document.getElementById('scaleUpBtn');
+    const lyricOffsetLabel = document.getElementById('lyricOffsetLabel');
+    const lyricOffsetValue = document.getElementById('lyricOffsetValue');
+    const lyricOffsetDownBtn = document.getElementById('lyricOffsetDownBtn');
+    const lyricOffsetUpBtn = document.getElementById('lyricOffsetUpBtn');
     const animLabel = document.getElementById('animLabel');
     const optLabel = document.getElementById('optLabel');
     const silentDeleteLabel = document.getElementById('silentDeleteLabel');
@@ -1881,6 +1963,7 @@
     const lyricsBox = document.getElementById('lyricsBox');
     const tapToStart = document.getElementById('tapToStart');
     let lyricSwapTimer = null;
+    let lyricHideTimer = null;
 
     const SETTINGS_KEY = 'atmospheres_app_settings';
     const BG_PRESETS = [
@@ -1893,7 +1976,32 @@
       'https://images.unsplash.com/photo-1507400492013-162706c8c05e?q=80&w=1600&auto=format&fit=crop',
       'https://images.unsplash.com/photo-1475274047050-1d0c0975c63e?q=80&w=1600&auto=format&fit=crop'
     ];
-    let appSettings = { animations: true, liquidglass: true, lang: 'ru', bgIndex: 0, phoneOpt: null, silentDelete: false };
+    let appSettings = { animations: true, liquidglass: true, lang: 'ru', bgIndex: 0, phoneOpt: null, silentDelete: false, scale: 1, lyricOffset: 0 };
+    const SCALE_MIN = 0.75;
+    const SCALE_MAX = 1.5;
+    const SCALE_STEP = 0.05;
+    const LYRIC_OFFSET_MIN = -15;
+    const LYRIC_OFFSET_MAX = 15;
+    const LYRIC_OFFSET_STEP = 0.5;
+
+    function clampScale(value) {
+      const n = Number(value);
+      if (!Number.isFinite(n)) return 1;
+      return Math.min(SCALE_MAX, Math.max(SCALE_MIN, Math.round(n * 100) / 100));
+    }
+
+    function clampLyricOffset(value) {
+      const n = Number(value);
+      if (!Number.isFinite(n)) return 0;
+      const clamped = Math.min(LYRIC_OFFSET_MAX, Math.max(LYRIC_OFFSET_MIN, n));
+      return Math.round(clamped * 2) / 2;
+    }
+
+    function formatLyricOffset(value) {
+      const n = clampLyricOffset(value);
+      const sign = n > 0 ? '+' : '';
+      return `${sign}${n.toFixed(1)}s`;
+    }
     let btnState = 'play';
     const isLikelyPhone = () => (
       window.matchMedia('(pointer: coarse)').matches ||
@@ -1925,6 +2033,12 @@
         animations: 'Анимации',
         language: 'Язык',
         phoneOpt: 'Оптимизация телефона',
+        scale: 'Масштаб',
+        scaleDown: 'Уменьшить масштаб',
+        scaleUp: 'Увеличить масштаб',
+        lyricOffset: 'Сдвиг лирики',
+        lyricOffsetDown: 'Лирика позже (−)',
+        lyricOffsetUp: 'Лирика раньше (+)',
         silentDelete: 'Без предупреждения при удалении',
         silentDeleteHint: 'Удалять треки из плейлиста без подтверждения',
         background: 'Фон',
@@ -1987,6 +2101,12 @@
         animations: 'Animations',
         language: 'Language',
         phoneOpt: 'Phone optimization',
+        scale: 'Scale',
+        scaleDown: 'Zoom out',
+        scaleUp: 'Zoom in',
+        lyricOffset: 'Lyric offset',
+        lyricOffsetDown: 'Lyrics later (−)',
+        lyricOffsetUp: 'Lyrics earlier (+)',
         silentDelete: 'Delete without warning',
         silentDeleteHint: 'Remove playlist tracks without confirmation',
         background: 'Background',
@@ -2097,6 +2217,14 @@
       if (searchBtn) searchBtn.textContent = t('find');
       if (animLabel) animLabel.textContent = t('animations');
       if (optLabel) optLabel.textContent = t('phoneOpt');
+      if (scaleLabel) scaleLabel.textContent = t('scale');
+      if (scaleDownBtn) scaleDownBtn.title = t('scaleDown');
+      if (scaleUpBtn) scaleUpBtn.title = t('scaleUp');
+      if (scaleValue) scaleValue.textContent = `${Math.round(clampScale(appSettings.scale) * 100)}%`;
+      if (lyricOffsetLabel) lyricOffsetLabel.textContent = t('lyricOffset');
+      if (lyricOffsetDownBtn) lyricOffsetDownBtn.title = t('lyricOffsetDown');
+      if (lyricOffsetUpBtn) lyricOffsetUpBtn.title = t('lyricOffsetUp');
+      if (lyricOffsetValue) lyricOffsetValue.textContent = formatLyricOffset(appSettings.lyricOffset);
       if (silentDeleteLabel) silentDeleteLabel.textContent = t('silentDelete');
       if (silentDeleteToggle) silentDeleteToggle.title = t('silentDeleteHint');
       if (langLabel) langLabel.textContent = t('language');
@@ -2163,7 +2291,9 @@
                 ? Math.abs(Math.trunc(data.bgIndex)) % BG_PRESETS.length
                 : 0,
               phoneOpt: data.phoneOpt === true ? true : data.phoneOpt === false ? false : null,
-              silentDelete: data.silentDelete === true
+              silentDelete: data.silentDelete === true,
+              scale: clampScale(data.scale),
+              lyricOffset: clampLyricOffset(data.lyricOffset)
             };
           }
         }
@@ -2177,6 +2307,21 @@
       const base = BG_PRESETS[idx];
       const w = appSettings.phoneOpt ? 900 : 1600;
       bgLayer.src = base.replace('w=1600', `w=${w}`);
+    }
+
+    function applyScale() {
+      const scale = clampScale(appSettings.scale);
+      appSettings.scale = scale;
+      const root = document.documentElement;
+      root.style.zoom = String(scale);
+      document.body.style.zoom = String(scale);
+      if (scaleValue) scaleValue.textContent = `${Math.round(scale * 100)}%`;
+      const applyMetrics = () => {
+        try { refreshMetrics(); } catch (_) {}
+        try { window.dispatchEvent(new Event('resize')); } catch (_) {}
+      };
+      applyMetrics();
+      requestAnimationFrame(() => requestAnimationFrame(applyMetrics));
     }
 
     function applyAppSettings() {
@@ -2201,8 +2346,16 @@
         silentDeleteToggle.classList.toggle('is-on', !!appSettings.silentDelete);
         silentDeleteToggle.setAttribute('aria-checked', appSettings.silentDelete ? 'true' : 'false');
       }
+      applyScale();
+      if (lyricOffsetValue) lyricOffsetValue.textContent = formatLyricOffset(appSettings.lyricOffset);
       applyBackground();
       applyLang();
+      if (syncedLyricsLines.length) {
+        activeLyricIndex = -1;
+        updateLyricsByTime(getCurrentPlaybackTime(), true);
+        if (activeLyricIndex < 0) activeLyricIndex = 0;
+        updateLyricsDisplay();
+      }
     }
 
     function persistAppSettings() {
@@ -2285,6 +2438,36 @@
         markSettingsDirty();
       });
     }
+
+    function stepScale(dir) {
+      const current = clampScale(appSettings.scale);
+      const next = clampScale(Math.round((current + dir * SCALE_STEP) * 100) / 100);
+      if (next === current) return;
+      appSettings.scale = next;
+      applyScale();
+      markSettingsDirty();
+    }
+
+    if (scaleDownBtn) scaleDownBtn.addEventListener('click', () => stepScale(-1));
+    if (scaleUpBtn) scaleUpBtn.addEventListener('click', () => stepScale(1));
+
+    function stepLyricOffset(dir) {
+      const current = clampLyricOffset(appSettings.lyricOffset);
+      const next = clampLyricOffset(current + dir * LYRIC_OFFSET_STEP);
+      if (next === current) return;
+      appSettings.lyricOffset = next;
+      if (lyricOffsetValue) lyricOffsetValue.textContent = formatLyricOffset(next);
+      if (syncedLyricsLines.length) {
+        activeLyricIndex = -1;
+        updateLyricsByTime(getCurrentPlaybackTime(), true);
+        if (activeLyricIndex < 0) activeLyricIndex = 0;
+        updateLyricsDisplay();
+      }
+      markSettingsDirty();
+    }
+
+    if (lyricOffsetDownBtn) lyricOffsetDownBtn.addEventListener('click', () => stepLyricOffset(-1));
+    if (lyricOffsetUpBtn) lyricOffsetUpBtn.addEventListener('click', () => stepLyricOffset(1));
 
     if (changeBgBtn) {
       changeBgBtn.addEventListener('click', () => {
@@ -2673,18 +2856,47 @@
       });
     }
 
-    function hideFloatingLyrics() {
+    function canAnimateLyrics() {
+      return !!appSettings.animations
+        && !document.body.classList.contains('no-animations')
+        && !document.body.classList.contains('phone-opt');
+    }
+
+    function hideFloatingLyrics(immediate) {
       clearTimeout(lyricSwapTimer);
       lyricSwapTimer = null;
+      clearTimeout(lyricHideTimer);
+      lyricHideTimer = null;
       syncedLyricsLines = [];
       activeLyricIndex = -1;
-      line1.textContent = '';
-      line2.textContent = '';
-      lyricsBox.classList.remove('is-visible', 'is-leaving');
-      lyricsBox.hidden = true;
+
+      const finish = () => {
+        line1.textContent = '';
+        line2.textContent = '';
+        line1.classList.remove('is-swap');
+        line2.classList.remove('is-swap');
+        lyricsBox.classList.remove('is-visible', 'is-leaving');
+        lyricsBox.hidden = true;
+        lyricHideTimer = null;
+      };
+
+      const animate = immediate !== true
+        && !lyricsBox.hidden
+        && canAnimateLyrics();
+
+      if (!animate) {
+        finish();
+        return;
+      }
+
+      lyricsBox.classList.remove('is-visible');
+      lyricsBox.classList.add('is-leaving');
+      lyricHideTimer = setTimeout(finish, 450);
     }
 
     function showFloatingLyrics() {
+      clearTimeout(lyricHideTimer);
+      lyricHideTimer = null;
       lyricsBox.hidden = false;
       lyricsBox.classList.remove('is-leaving');
       requestAnimationFrame(() => {
@@ -2692,28 +2904,118 @@
       });
     }
 
-    async function loadLyrics(artist, title) {
+    function normText(s) {
+      return String(s || '')
+        .toLowerCase()
+        .replace(/\(.*?\)/g, ' ')
+        .replace(/\[.*?\]/g, ' ')
+        .replace(/[^a-zа-яё0-9]+/gi, ' ')
+        .trim();
+    }
+
+    function scoreLyricsItem(item, artist, title, duration) {
+      let score = 0;
+      const nTitle = normText(title);
+      const nArtist = normText(artist);
+      const iTitle = normText(item.trackName || item.name);
+      const iArtist = normText(item.artistName);
+      const clean = (s) => String(s || '')
+        .toLowerCase()
+        .replace(/\b(remaster(ed)?|live|radio edit|edit|extended|deluxe|sped up|slowed|nightcore|cover|instrumental|karaoke|feat\.?|ft\.?|official)\b/g, ' ')
+        .replace(/[^a-zа-яё0-9]+/gi, ' ')
+        .trim();
+      const ct = clean(nTitle);
+      const it = clean(iTitle);
+      if (ct && it) {
+        if (ct === it) score += 50;
+        else if (it.includes(ct) || ct.includes(it)) score += 22;
+        else score -= 20;
+      } else {
+        score -= 15;
+      }
+      if (nArtist && iArtist) {
+        if (nArtist === iArtist) score += 35;
+        else if (iArtist.includes(nArtist) || nArtist.includes(iArtist)) score += 16;
+        else score -= 12;
+      }
+      const dur = Number(duration);
+      const itemDur = Number(item.duration);
+      if (Number.isFinite(dur) && dur > 0 && Number.isFinite(itemDur) && itemDur > 0) {
+        const diff = Math.abs(itemDur - dur);
+        if (diff <= 1) score += 55;
+        else if (diff <= 3) score += 35;
+        else if (diff <= 6) score += 15;
+        else if (diff <= 12) score += 2;
+        else if (diff <= 25) score -= 20;
+        else score -= 50;
+      } else {
+        score -= 8;
+      }
+      if (item.syncedLyrics) score += 4;
+      return score;
+    }
+
+    async function loadLyrics(artist, title, duration) {
       const token = ++lyricsToken;
-      hideFloatingLyrics();
+      hideFloatingLyrics(true);
 
       try {
         const query = `${artist} ${title}`.trim();
-        const res = await fetch(`https://lrclib.net/api/search?q=${encodeURIComponent(query)}`);
+        const durSec = Number(duration) > 0 ? Math.round(Number(duration)) : 0;
+        let list = null;
+
+        if (durSec) {
+          try {
+            const getUrl = new URL('https://lrclib.net/api/get');
+            getUrl.searchParams.set('artist_name', artist || '');
+            getUrl.searchParams.set('track_name', title || '');
+            getUrl.searchParams.set('duration', String(durSec));
+            const getRes = await fetch(getUrl.toString());
+            if (token !== lyricsToken) return;
+            if (getRes.ok) {
+              const exact = await getRes.json();
+              if (token !== lyricsToken) return;
+              if (exact && exact.syncedLyrics && exact.syncedLyrics.trim()) {
+                list = [exact];
+              }
+            } else if (getRes.status === 404) {
+              // fall through to search
+            }
+          } catch (_) {}
+        }
+
+        if (!list) {
+          const res = await fetch(`https://lrclib.net/api/search?q=${encodeURIComponent(query)}`);
+          if (token !== lyricsToken) return;
+          if (!res.ok) return;
+          list = await res.json();
+        }
+        if (token !== lyricsToken || !Array.isArray(list)) return;
+
+        const candidates = list
+          .filter(item => item && item.syncedLyrics && item.syncedLyrics.trim().length > 0)
+          .map(item => ({ item, score: scoreLyricsItem(item, artist, title, duration) }))
+          .sort((a, b) => b.score - a.score);
+
+        if (!candidates.length) return;
         if (token !== lyricsToken) return;
 
-        if (!res.ok) return;
+        let bestLines = null;
+        let bestScore = -Infinity;
+        for (const { item, score } of candidates.slice(0, 8)) {
+          const lines = parseSyncedLyrics(item.syncedLyrics);
+          if (!lines.length) continue;
+          if (score > bestScore) {
+            bestScore = score;
+            bestLines = lines;
+          }
+        }
+        if (!bestLines || token !== lyricsToken) return;
 
-        const list = await res.json();
-        if (token !== lyricsToken) return;
-        const found = list.find(item => item.syncedLyrics && item.syncedLyrics.trim().length > 0);
-        if (!found) return;
-        if (token !== lyricsToken) return;
-
-        const lines = parseSyncedLyrics(found.syncedLyrics);
-        if (token !== lyricsToken || !lines.length) return;
-
-        syncedLyricsLines = lines;
-        activeLyricIndex = 0;
+        syncedLyricsLines = bestLines;
+        activeLyricIndex = -1;
+        updateLyricsByTime(getCurrentPlaybackTime(), true);
+        if (activeLyricIndex < 0) activeLyricIndex = 0;
         updateLyricsDisplay();
         showFloatingLyrics();
       } catch (_) {
@@ -2721,48 +3023,103 @@
       }
     }
 
+    function getCurrentPlaybackTime() {
+      if (activeEngine === 'yt') {
+        if (ytPlayer && typeof ytPlayer.getCurrentTime === 'function') {
+          return ytPlayer.getCurrentTime() || 0;
+        }
+        return 0;
+      }
+      return audio.currentTime || 0;
+    }
+
     function parseSyncedLyrics(lrc) {
-      const lines = lrc.split('\n');
+      const lines = String(lrc || '').split(/\r?\n/);
       const result = [];
-      const regex = /\[(\d{2}):(\d{2})\.(\d{2,3})\](.*)/;
+      const tagRe = /\[(\d{1,3}):(\d{2})(?:[.:](\d{1,3}))?\]/g;
       for (const line of lines) {
-        const match = regex.exec(line);
-        if (match) {
-          const minutes = parseInt(match[1], 10);
-          const seconds = parseInt(match[2], 10);
-          const milliseconds = parseInt(match[3].padEnd(3, '0'), 10);
-          const time = minutes * 60 + seconds + milliseconds / 1000;
-          const text = match[4].trim();
-          if (text) result.push({ time, text });
+        const tags = [];
+        let m;
+        tagRe.lastIndex = 0;
+        while ((m = tagRe.exec(line)) !== null) {
+          const minutes = parseInt(m[1], 10);
+          const seconds = parseInt(m[2], 10);
+          const fracRaw = m[3] || '0';
+          const frac = parseInt(fracRaw.padEnd(3, '0').slice(0, 3), 10);
+          tags.push(minutes * 60 + seconds + frac / 1000);
+        }
+        if (!tags.length) continue;
+        const text = line.replace(tagRe, '').trim();
+        if (!text) continue;
+        for (const time of tags) {
+          result.push({ time, text });
         }
       }
-      return result;
+      result.sort((a, b) => a.time - b.time);
+      const deduped = [];
+      for (const row of result) {
+        const prev = deduped[deduped.length - 1];
+        if (prev && Math.abs(prev.time - row.time) < 0.05 && prev.text === row.text) continue;
+        deduped.push(row);
+      }
+      return deduped;
+    }
+
+    function setLyricLineText(el, text) {
+      if (!el) return;
+      if (el.textContent === text) return;
+      el.textContent = text;
+      if (!text || !canAnimateLyrics()) {
+        el.classList.remove('is-swap');
+        return;
+      }
+      el.classList.remove('is-swap');
+      void el.offsetWidth;
+      el.classList.add('is-swap');
     }
 
     function updateLyricsDisplay() {
       if (syncedLyricsLines.length === 0) return;
       const idx = activeLyricIndex >= 0 ? activeLyricIndex : 0;
-      line1.textContent = syncedLyricsLines[idx]?.text || '';
-      line2.textContent = syncedLyricsLines[idx + 1]?.text || '';
+      setLyricLineText(line1, syncedLyricsLines[idx]?.text || '');
+      setLyricLineText(line2, syncedLyricsLines[idx + 1]?.text || '');
     }
 
-    function updateLyricsByTime(currentTime) {
+    function findLyricIndex(currentTime) {
+      const arr = syncedLyricsLines;
+      if (!arr.length) return -1;
+      if (currentTime < arr[0].time) return -1;
+      let lo = 0;
+      let hi = arr.length - 1;
+      let ans = 0;
+      while (lo <= hi) {
+        const mid = (lo + hi) >> 1;
+        if (arr[mid].time <= currentTime + 0.02) {
+          ans = mid;
+          lo = mid + 1;
+        } else {
+          hi = mid - 1;
+        }
+      }
+      return ans;
+    }
+
+    function updateLyricsByTime(currentTime, immediate) {
       if (syncedLyricsLines.length === 0) return;
-      let found = syncedLyricsLines.findIndex(l => l.time > currentTime) - 1;
-      if (found < 0) found = 0;
+      const offset = clampLyricOffset(appSettings.lyricOffset);
+      const found = findLyricIndex(currentTime + offset);
       if (found === activeLyricIndex) return;
 
       activeLyricIndex = found;
       clearTimeout(lyricSwapTimer);
-      lyricsBox.classList.remove('is-visible');
-      lyricsBox.classList.add('is-leaving');
-      lyricSwapTimer = setTimeout(() => {
-        if (lyricsBox.hidden) return;
-        updateLyricsDisplay();
-        lyricsBox.classList.remove('is-leaving');
-        void lyricsBox.offsetWidth;
-        lyricsBox.classList.add('is-visible');
-      }, 320);
+      lyricSwapTimer = null;
+
+      if (lyricsBox.hidden) return;
+
+      updateLyricsDisplay();
+      lyricsBox.classList.remove('is-leaving');
+      lyricsBox.classList.add('is-visible');
+      void immediate;
     }
 
     function renderProgressValues(currentTime, duration) {
@@ -2988,7 +3345,7 @@
       trackArtist.textContent = track.artist || (track.source === 'yt' ? 'YouTube' : 'SoundCloud');
       if (track.cover) coverImg.src = track.cover;
       if (track.duration) durTimeEl.textContent = formatTime(track.duration);
-      loadLyrics(track.artist, track.title);
+      loadLyrics(track.artist, track.title, track.duration);
       renderList();
       updateSystemMediaSession(true);
     }
@@ -3145,6 +3502,13 @@
 
     trackWrapper.addEventListener('pointerup', endPointer);
     trackWrapper.addEventListener('pointercancel', endPointer);
+
+    line1.addEventListener('animationend', (e) => {
+      if (e.target === line1) line1.classList.remove('is-swap');
+    });
+    line2.addEventListener('animationend', (e) => {
+      if (e.target === line2) line2.classList.remove('is-swap');
+    });
 
     restorePlaylist();
     loadAppSettings();

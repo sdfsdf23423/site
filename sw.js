@@ -1,4 +1,4 @@
-const CACHE = 'atmospheres-v3';
+const CACHE = 'atmospheres-v4';
 const ASSETS = [
   './',
   './index.html',
