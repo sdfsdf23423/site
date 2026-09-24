@@ -887,6 +887,315 @@
       display: none !important;
     }
 
+    .drawer-search-view .pl-bar {
+      margin-bottom: 14px;
+    }
+
+    .drawer-search-view .playlist-hint {
+      margin-top: -4px;
+      padding-top: 0;
+      margin-bottom: -2px;
+    }
+
+    .pl-icon-btn.is-loading {
+      opacity: 0.55;
+      pointer-events: none;
+    }
+
+    .pl-bar {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 3px;
+      min-width: 0;
+      padding-top: 1px;
+      position: relative;
+      z-index: 12;
+    }
+
+    .pl-menu-wrap {
+      position: relative;
+      flex: 0 0 auto;
+      min-width: 0;
+      z-index: 2;
+    }
+
+    .pl-bar-spacer {
+      display: none;
+    }
+
+    .pl-trigger {
+      width: 22px;
+      height: 22px;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.07);
+      border: 1px solid rgba(255, 255, 255, 0.16);
+      color: rgba(255, 255, 255, 0.82);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      outline: none;
+      padding: 0;
+      flex-shrink: 0;
+      line-height: 0;
+      min-width: 0;
+      transition: transform 0.2s cubic-bezier(0.34, 1.4, 0.64, 1), background 0.2s ease, border-color 0.2s ease, color 0.2s ease;
+    }
+
+    .pl-trigger:hover,
+    .pl-trigger[aria-expanded="true"] {
+      background: rgba(255, 255, 255, 0.14);
+      border-color: rgba(255, 255, 255, 0.28);
+      color: rgba(255, 255, 255, 0.96);
+    }
+
+    .pl-trigger:active {
+      transform: scale(0.9);
+    }
+
+    .pl-trigger-icon {
+      display: block;
+      width: 11px;
+      height: 11px;
+      stroke: currentColor;
+      stroke-width: 1.75;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+      fill: none;
+      flex-shrink: 0;
+    }
+
+    .pl-menu {
+      position: absolute;
+      top: calc(100% + 6px);
+      left: 0;
+      right: 0;
+      min-width: 168px;
+      max-width: min(240px, 78vw);
+      max-height: 180px;
+      overflow-y: auto;
+      padding: 5px;
+      border-radius: 14px;
+      background: rgba(18, 15, 19, 0.92);
+      border: 1px solid rgba(255, 255, 255, 0.16);
+      box-shadow: 0 14px 32px rgba(0, 0, 0, 0.45);
+      backdrop-filter: blur(18px) saturate(150%);
+      -webkit-backdrop-filter: blur(18px) saturate(150%);
+      z-index: 40;
+      opacity: 0;
+      transform: translateY(-4px) scale(0.98);
+      transform-origin: top left;
+      pointer-events: none;
+      transition: opacity 0.16s ease, transform 0.18s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .pl-menu.is-open {
+      opacity: 1;
+      transform: translateY(0) scale(1);
+      pointer-events: auto;
+    }
+
+    .pl-menu[hidden] {
+      display: none !important;
+    }
+
+    .pl-option {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      width: 100%;
+      border: 0;
+      background: transparent;
+      color: rgba(255, 255, 255, 0.88);
+      font-family: 'Onest', -apple-system, BlinkMacSystemFont, sans-serif;
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.01em;
+      text-align: left;
+      padding: 8px 10px;
+      border-radius: 10px;
+      cursor: pointer;
+      outline: none;
+      transition: background 0.15s ease, color 0.15s ease;
+    }
+
+    .pl-option:hover {
+      background: rgba(255, 255, 255, 0.1);
+      color: #fff;
+    }
+
+    .pl-option.is-active {
+      background: rgba(255, 255, 255, 0.14);
+      color: #fff;
+    }
+
+    .pl-option-name {
+      min-width: 0;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .pl-option-count {
+      flex-shrink: 0;
+      font-size: 9px;
+      font-weight: 700;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      color: rgba(255, 255, 255, 0.45);
+      font-variant-numeric: tabular-nums;
+    }
+
+    .pl-option.is-active .pl-option-count {
+      color: rgba(255, 255, 255, 0.65);
+    }
+
+    .pl-actions {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 3px;
+      flex-shrink: 0;
+      min-width: 0;
+    }
+
+    .pl-icon-btn {
+      width: 22px;
+      height: 22px;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.07);
+      border: 1px solid rgba(255, 255, 255, 0.16);
+      color: rgba(255, 255, 255, 0.82);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      outline: none;
+      padding: 0;
+      flex-shrink: 0;
+      line-height: 0;
+      transition: transform 0.2s cubic-bezier(0.34, 1.4, 0.64, 1), background 0.2s ease, border-color 0.2s ease, color 0.2s ease, opacity 0.2s ease;
+    }
+
+    .pl-icon-btn svg {
+      display: block;
+      width: 11px;
+      height: 11px;
+      stroke: currentColor;
+      stroke-width: 1.75;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+      fill: none;
+    }
+
+    .pl-icon-btn:hover {
+      background: rgba(255, 255, 255, 0.14);
+      border-color: rgba(255, 255, 255, 0.28);
+      color: rgba(255, 255, 255, 0.96);
+    }
+
+    .pl-icon-btn:active {
+      transform: scale(0.9);
+    }
+
+    .pl-icon-btn:disabled {
+      opacity: 0.4;
+      cursor: default;
+      transform: none;
+    }
+
+    .pl-icon-btn.pl-danger {
+      color: rgba(255, 120, 120, 0.92);
+      border-color: rgba(255, 90, 90, 0.28);
+    }
+
+    .pl-icon-btn.pl-danger:hover {
+      background: rgba(255, 70, 70, 0.16);
+      border-color: rgba(255, 80, 80, 0.45);
+      color: #ff8a8a;
+    }
+
+    .pl-icon-btn.pl-danger:disabled {
+      opacity: 1;
+      background: rgba(255, 70, 70, 0.1);
+      border-color: rgba(255, 90, 90, 0.38);
+      color: rgba(255, 130, 130, 0.95);
+      cursor: default;
+      transform: none;
+    }
+
+    body.is-light-mode .pl-trigger {
+      background: rgba(0, 0, 0, 0.05);
+      border-color: rgba(0, 0, 0, 0.12);
+      color: rgba(26, 22, 24, 0.88);
+    }
+
+    body.is-light-mode .pl-trigger:hover,
+    body.is-light-mode .pl-trigger[aria-expanded="true"] {
+      background: rgba(0, 0, 0, 0.1);
+      border-color: rgba(0, 0, 0, 0.2);
+      color: #1a1618;
+    }
+
+    body.is-light-mode .pl-menu {
+      background: rgba(255, 255, 255, 0.94);
+      border-color: rgba(0, 0, 0, 0.1);
+      box-shadow: 0 14px 32px rgba(0, 0, 0, 0.18);
+      color: #1a1618;
+    }
+
+    body.is-light-mode .pl-option {
+      color: rgba(26, 22, 24, 0.88);
+    }
+
+    body.is-light-mode .pl-option:hover,
+    body.is-light-mode .pl-option.is-active {
+      background: rgba(0, 0, 0, 0.07);
+      color: #1a1618;
+    }
+
+    body.is-light-mode .pl-option-count {
+      color: rgba(26, 22, 24, 0.45);
+    }
+
+    body.is-light-mode .pl-option.is-active .pl-option-count {
+      color: rgba(26, 22, 24, 0.6);
+    }
+
+    body.is-light-mode .pl-icon-btn {
+      background: rgba(0, 0, 0, 0.05);
+      border-color: rgba(0, 0, 0, 0.12);
+      color: rgba(26, 22, 24, 0.8);
+    }
+
+    body.is-light-mode .pl-icon-btn:hover {
+      background: rgba(0, 0, 0, 0.1);
+      border-color: rgba(0, 0, 0, 0.2);
+      color: #1a1618;
+    }
+
+    body.is-light-mode .pl-icon-btn.pl-danger {
+      color: #c62828;
+      border-color: rgba(198, 40, 40, 0.28);
+    }
+
+    body.is-light-mode .pl-icon-btn.pl-danger:hover {
+      background: rgba(198, 40, 40, 0.12);
+      border-color: rgba(198, 40, 40, 0.4);
+      color: #b71c1c;
+    }
+
+    body.is-light-mode .pl-icon-btn.pl-danger:disabled {
+      opacity: 1;
+      background: rgba(198, 40, 40, 0.08);
+      border-color: rgba(198, 40, 40, 0.35);
+      color: #c62828;
+      cursor: default;
+      transform: none;
+    }
+
     body.is-light-mode .playlist-list {
       scrollbar-color: rgba(0, 0, 0, 0.2) transparent;
     }
@@ -1066,6 +1375,49 @@
         <button class="search-btn" id="searchBtn">Найти</button>
       </div>
 
+      <div class="pl-bar" id="plBar">
+        <div class="pl-menu-wrap">
+          <button class="pl-trigger" id="plTrigger" type="button" aria-haspopup="listbox" aria-expanded="false" title="Плейлист">
+            <svg viewBox="0 0 24 24" aria-hidden="true" class="pl-trigger-icon">
+              <path d="M8 6h13"/>
+              <path d="M8 12h13"/>
+              <path d="M8 18h13"/>
+              <path d="M4 6h.01"/>
+              <path d="M4 12h.01"/>
+              <path d="M4 18h.01"/>
+            </svg>
+          </button>
+          <div class="pl-menu" id="plMenu" role="listbox" hidden></div>
+        </div>
+        <div class="pl-actions">
+          <button class="pl-icon-btn" id="recBtn" type="button" title="Рекомендации SoundCloud">
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M4.9 19.1C1 15.2 1 8.8 4.9 4.9"/>
+              <path d="M7.8 16.2a6 6 0 0 1 0-8.5"/>
+              <circle cx="12" cy="12" r="2.2"/>
+              <path d="M16.2 7.8a6 6 0 0 1 0 8.5"/>
+              <path d="M19.1 4.9a10 10 0 0 1 0 14.1"/>
+            </svg>
+          </button>
+          <button class="pl-icon-btn" id="plNewBtn" type="button" title="Новый плейлист">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>
+          </button>
+          <button class="pl-icon-btn" id="plRenameBtn" type="button" title="Переименовать">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20h4l10.5-10.5a2.12 2.12 0 0 0-3-3L5 17v3z"/><path d="M13.5 6.5l3 3"/></svg>
+          </button>
+          <button class="pl-icon-btn" id="plExportBtn" type="button" title="Сохранить в файл">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v12"/><path d="M7 10l5 5 5-5"/><path d="M5 21h14"/></svg>
+          </button>
+          <button class="pl-icon-btn" id="plImportBtn" type="button" title="Загрузить из файла">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 15V3"/><path d="M7 8l5-5 5 5"/><path d="M5 21h14"/></svg>
+          </button>
+          <button class="pl-icon-btn pl-danger" id="plDeleteBtn" type="button" title="Удалить плейлист">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg>
+          </button>
+        </div>
+        <input type="file" id="plFileInput" accept=".atmospheres,application/json,.json" hidden />
+      </div>
+
       <div class="playlist-hint" id="playlistHint">SoundCloud · YouTube</div>
       <div class="playlist-list" id="playlistContainer"></div>
       <button class="load-more-btn" id="loadMoreBtn" type="button" hidden>Ещё</button>
@@ -1237,6 +1589,8 @@
 
   <script>
     const STORAGE_KEY = 'atmospheres_playlist_sc';
+    const PLAYLISTS_KEY = 'atmospheres_playlists_v1';
+    const ATMOS_FILE_FORMAT = 'atmospheres-playlist';
     let REGION_MSG = 'Трек запрещён в вашем регионе';
 
     const SC_CLIENT_ID_FALLBACK = 'Pb72ranhoyt6gw7hM7TkzUItXlMWSNSo';
@@ -1247,6 +1601,16 @@
       (u) => 'https://r.jina.ai/' + u
     ];
     const SC_PAGE_SIZE = 50;
+    const HISTORY_KEY = 'atmospheres_listen_history_v1';
+    const HISTORY_MAX = 60;
+    const REC_PAGE = 30;
+    let recState = {
+      active: false,
+      offset: 0,
+      seeds: [],
+      done: false,
+      isLoading: false
+    };
 
     const PIPED_INSTANCES = [
       'https://api.piped.private.coffee',
@@ -1403,6 +1767,9 @@
 
     function mapScTracks(items) {
       return (Array.isArray(items) ? items : []).map(t => {
+        if (!t) return null;
+        if (t.track) t = t.track;
+        if (t.kind === 'track' && t.id == null && t.track) t = t.track;
         const art = t.artwork_url || (t.user && t.user.avatar_url) || '';
         const cover = art
           ? art.replace('-large.', '-t500x500.').replace('-t67x67.', '-t500x500.').replace('-t300x300.', '-t500x500.')
@@ -1426,7 +1793,16 @@
           cover,
           duration: Math.round((t.duration || 0) / 1000)
         };
-      }).filter(t => t.title && t.scId);
+      }).filter(t => t && t.title && t.scId);
+    }
+
+    function unwrapScItems(data) {
+      if (!data) return [];
+      if (Array.isArray(data)) return data;
+      if (Array.isArray(data.collection)) return data.collection;
+      if (Array.isArray(data.tracks)) return data.tracks;
+      if (Array.isArray(data.items)) return data.items;
+      return [];
     }
 
     function parseVideoId(url) {
@@ -1529,7 +1905,178 @@
       return out;
     }
 
+    function loadListenHistory() {
+      try {
+        const raw = localStorage.getItem(HISTORY_KEY);
+        const data = raw ? JSON.parse(raw) : [];
+        return Array.isArray(data) ? data : [];
+      } catch (_) {
+        return [];
+      }
+    }
+
+    function noteListen(track) {
+      if (!track || !track.uid) return;
+      try {
+        const history = loadListenHistory().filter(x => x && x.uid !== track.uid);
+        history.unshift({
+          uid: track.uid,
+          source: track.source,
+          scId: track.scId || 0,
+          title: track.title || '',
+          artist: track.artist || '',
+          at: Date.now()
+        });
+        localStorage.setItem(HISTORY_KEY, JSON.stringify(history.slice(0, HISTORY_MAX)));
+      } catch (_) {}
+    }
+
+    function tasteProfile() {
+      const weights = Object.create(null);
+      const bump = (token, n) => {
+        if (!token || token.length < 3) return;
+        weights[token] = (weights[token] || 0) + n;
+      };
+      loadListenHistory().forEach((h, i) => {
+        const age = Math.max(0.35, 1 - i / HISTORY_MAX);
+        const text = `${h.artist || ''} ${h.title || ''}`.toLowerCase();
+        text.split(/[^a-zа-яё0-9]+/i).forEach(w => bump(w, age));
+      });
+      return weights;
+    }
+
+    function scoreTrackForTaste(track, weights) {
+      const text = `${track.artist || ''} ${track.title || ''}`.toLowerCase();
+      let score = 0;
+      text.split(/[^a-zа-яё0-9]+/i).forEach(w => {
+        if (weights[w]) score += weights[w];
+      });
+      if (track.source === 'sc') score += 0.35;
+      if (track.duration >= 90 && track.duration <= 480) score += 0.2;
+      return score;
+    }
+
+    function recommendationSeeds() {
+      const seeds = [];
+      const seen = new Set();
+      const push = (tr) => {
+        if (!tr || !tr.scId || seen.has(tr.scId)) return;
+        seen.add(tr.scId);
+        seeds.push(tr);
+      };
+      const cur = playlist[currentIndex] || pendingTrack;
+      if (cur) push(cur);
+      loadListenHistory().forEach(h => push(h));
+      playlist.slice(0, 12).forEach(push);
+      return seeds.slice(0, 5);
+    }
+
+    async function fetchScRelated(scId, offset = 0, limit = REC_PAGE) {
+      try {
+        const data = await scApiGet(
+          `/tracks/${scId}/related?limit=${limit}&offset=${offset}&linked_partitioning=true`
+        );
+        return mapScTracks(unwrapScItems(data));
+      } catch (_) {
+        return [];
+      }
+    }
+
+    async function fetchScCharts(offset = 0, limit = REC_PAGE) {
+      try {
+        const data = await scApiGet(
+          `/charts?kind=top&genre=soundcloud:genres:all-music&high_tier_only=false&limit=${limit}&offset=${offset}&linked_partitioning=true`
+        );
+        return mapScTracks(unwrapScItems(data));
+      } catch (_) {
+        return [];
+      }
+    }
+
+    async function loadRecommendationPage({ first = false } = {}) {
+      if (recState.isLoading) return [];
+      if (recState.done && !first) return [];
+      recState.isLoading = true;
+      try {
+        if (first) {
+          recState.offset = 0;
+          recState.done = false;
+          recState.seeds = recommendationSeeds();
+        }
+        const offset = first ? 0 : recState.offset;
+        const weights = tasteProfile();
+        const seeds = recState.seeds.length ? recState.seeds : recommendationSeeds();
+        const jobs = [];
+
+        for (const seed of seeds.slice(0, 3)) {
+          jobs.push(fetchScRelated(seed.scId, offset, REC_PAGE));
+        }
+        if (offset === 0 || !seeds.length) {
+          jobs.push(fetchScCharts(offset, REC_PAGE));
+        }
+
+        const settled = await Promise.allSettled(jobs);
+        let items = [];
+        for (const s of settled) {
+          if (s.status === 'fulfilled') items.push(...s.value);
+        }
+        items = dedupeTracks(items);
+        items.sort((a, b) => scoreTrackForTaste(b, weights) - scoreTrackForTaste(a, weights));
+
+        const skip = new Set((searchResults || []).map(x => x.uid));
+        items = items.filter(x => !skip.has(x.uid));
+        recState.offset = offset + REC_PAGE;
+        if (!items.length) recState.done = true;
+        if (settled.every(s => s.status === 'rejected')) recState.done = true;
+        return items;
+      } finally {
+        recState.isLoading = false;
+      }
+    }
+
+    async function runRecommendations() {
+      if (isSearching || recState.isLoading) return;
+      isSearching = true;
+      searchBtn.disabled = true;
+      if (recBtn) {
+        recBtn.disabled = true;
+        recBtn.classList.add('is-loading');
+      }
+      loadMoreBtn.hidden = true;
+      playlistHint.textContent = t('recLoading');
+      setStatus('');
+      playlistContainer.innerHTML = '';
+      recState.active = true;
+      searchResults = null;
+      searchInput.value = '';
+
+      try {
+        const results = await loadRecommendationPage({ first: true });
+        searchResults = results.length ? results : null;
+        if (!results.length) {
+          playlistHint.textContent = loadListenHistory().length ? t('nothingFound') : t('recEmpty');
+        } else {
+          playlistHint.textContent = tf('recFound', results.length);
+        }
+        renderList();
+      } catch (err) {
+        searchResults = null;
+        playlistHint.textContent = t('recError');
+        setStatus(String((err && err.message) || err || 'rec failed'));
+        renderList();
+      } finally {
+        isSearching = false;
+        searchBtn.disabled = false;
+        if (recBtn) {
+          recBtn.disabled = false;
+          recBtn.classList.remove('is-loading');
+        }
+        updateLoadMoreBtn();
+      }
+    }
+
     async function searchAll(query) {
+      recState.active = false;
       searchCursors = {
         query,
         scOffset: 0,
@@ -1551,6 +2098,28 @@
     }
 
     async function loadMoreResults() {
+      if (recState.active) {
+        if (isSearching || recState.isLoading || recState.done) return null;
+        isSearching = true;
+        loadMoreBtn.disabled = true;
+        loadMoreBtn.textContent = t('loadingMore');
+        setStatus('');
+        try {
+          const more = await loadRecommendationPage({ first: false });
+          const merged = dedupeTracks([...(searchResults || []), ...more]);
+          searchResults = merged.length ? merged : null;
+          playlistHint.textContent = merged.length ? tf('recFound', merged.length) : t('recEmpty');
+          renderList();
+          return merged;
+        } catch (err) {
+          setStatus(String((err && err.message) || err));
+          return null;
+        } finally {
+          isSearching = false;
+          updateLoadMoreBtn();
+        }
+      }
+
       const query = searchCursors.query || searchInput.value.trim();
       if (!query || isSearching) return null;
       if (searchCursors.scDone) return null;
@@ -1577,12 +2146,16 @@
     }
 
     function updateSearchHint(results) {
+      if (recState.active) {
+        playlistHint.textContent = tf('recFound', results.length);
+        return;
+      }
       playlistHint.textContent = tf('found', results.length);
     }
 
     function updateLoadMoreBtn() {
       const showing = !!(searchResults && searchResults.length);
-      const hasMore = showing && !searchCursors.scDone;
+      const hasMore = showing && (recState.active ? !recState.done : !searchCursors.scDone);
       loadMoreBtn.hidden = !hasMore;
       loadMoreBtn.disabled = !hasMore || isSearching;
       loadMoreBtn.textContent = hasMore ? t('more') : t('noMore');
@@ -1876,6 +2449,8 @@
     }
 
     let playlist = [];
+    let playlists = [];
+    let activePlaylistId = '';
     let searchResults = null;
     let currentIndex = 0;
     let syncedLyricsLines = [];
@@ -1955,15 +2530,26 @@
     const streamDrawer = document.getElementById('streamDrawer');
     const playlistContainer = document.getElementById('playlistContainer');
     const playlistHint = document.getElementById('playlistHint');
+    const plBar = document.getElementById('plBar');
+    const plTrigger = document.getElementById('plTrigger');
+    const plMenu = document.getElementById('plMenu');
+    const plNewBtn = document.getElementById('plNewBtn');
+    const plRenameBtn = document.getElementById('plRenameBtn');
+    const plExportBtn = document.getElementById('plExportBtn');
+    const plImportBtn = document.getElementById('plImportBtn');
+    const plDeleteBtn = document.getElementById('plDeleteBtn');
+    const plFileInput = document.getElementById('plFileInput');
     const searchInput = document.getElementById('searchInput');
     const searchBtn = document.getElementById('searchBtn');
     const loadMoreBtn = document.getElementById('loadMoreBtn');
+    const recBtn = document.getElementById('recBtn');
     const line1 = document.getElementById('line1');
     const line2 = document.getElementById('line2');
     const lyricsBox = document.getElementById('lyricsBox');
     const tapToStart = document.getElementById('tapToStart');
     let lyricSwapTimer = null;
     let lyricHideTimer = null;
+    let plMenuCloseTimer = null;
 
     const SETTINGS_KEY = 'atmospheres_app_settings';
     const BG_PRESETS = [
@@ -2027,6 +2613,12 @@
         searchError: 'Ошибка поиска — ещё раз',
         nothingFoundList: 'Ничего не нашли',
         emptyHint: 'Найди трек на SoundCloud или YouTube — он сохранится в плейлист',
+        recForYou: 'Для вас',
+        recLoading: 'Собираем рекомендации SoundCloud…',
+        recFound: (n) => `Рекомендации: ${n} · по вашим вкусу и истории`,
+        recError: 'Не удалось собрать рекомендации',
+        recEmpty: 'Послушай пару треков — и подберём ещё',
+        recHint: 'Рекомендации по истории прослушиваний и похожим трекам SC',
         playlistEmpty: 'Плейлист пуст',
         playlist: (n) => `Плейлист (${n})`,
         findTrack: 'Найди трек',
@@ -2059,6 +2651,17 @@
         confirmSave: 'Вы точно хотите сохранить настройки?',
         confirmClear: 'Удалить все треки из плейлиста?',
         confirmDelete: (title) => `Удалить трек «${title}» из плейлиста?`,
+        defaultPlaylistName: 'Мой плейлист',
+        newPlaylist: 'Новый плейлист',
+        renamePlaylist: 'Переименовать плейлист',
+        deletePlaylist: 'Удалить плейлист',
+        exportPlaylist: 'Сохранить плейлист в файл',
+        importPlaylist: 'Загрузить плейлист из файла',
+        confirmDeletePlaylist: (name) => `Удалить плейлист «${name}»?`,
+        playlistImported: 'Плейлист загружен',
+        playlistExported: 'Файл .atmospheres сохранён',
+        importFailed: 'Не удалось загрузить файл',
+        playlistNamePrompt: 'Название плейлиста',
         yes: 'Да',
         no: 'Нет',
         regionMsg: 'Трек запрещён в вашем регионе',
@@ -2095,6 +2698,12 @@
         searchError: 'Search failed — try again',
         nothingFoundList: 'Nothing found',
         emptyHint: 'Find a track on SoundCloud or YouTube — it will be saved to the playlist',
+        recForYou: 'For you',
+        recLoading: 'Building SoundCloud picks…',
+        recFound: (n) => `Recommendations: ${n} · from your taste & history`,
+        recError: 'Could not build recommendations',
+        recEmpty: 'Play a couple of tracks — then we will pick more',
+        recHint: 'Picks from listening history and related SoundCloud tracks',
         playlistEmpty: 'Playlist is empty',
         playlist: (n) => `Playlist (${n})`,
         findTrack: 'Find a track',
@@ -2127,6 +2736,17 @@
         confirmSave: 'Are you sure you want to save settings?',
         confirmClear: 'Delete all tracks from the playlist?',
         confirmDelete: (title) => `Delete track «${title}» from the playlist?`,
+        defaultPlaylistName: 'My playlist',
+        newPlaylist: 'New playlist',
+        renamePlaylist: 'Rename playlist',
+        deletePlaylist: 'Delete playlist',
+        exportPlaylist: 'Save playlist to file',
+        importPlaylist: 'Load playlist from file',
+        confirmDeletePlaylist: (name) => `Delete playlist «${name}»?`,
+        playlistImported: 'Playlist loaded',
+        playlistExported: '.atmospheres file saved',
+        importFailed: 'Could not load file',
+        playlistNamePrompt: 'Playlist name',
         yes: 'Yes',
         no: 'No',
         regionMsg: 'Track not available in your region',
@@ -2215,6 +2835,7 @@
       if (settingsBtn) settingsBtn.title = t('searchAndPlaylist');
       if (searchInput) searchInput.placeholder = t('searchPlaceholder');
       if (searchBtn) searchBtn.textContent = t('find');
+      if (recBtn) recBtn.title = t('recHint');
       if (animLabel) animLabel.textContent = t('animations');
       if (optLabel) optLabel.textContent = t('phoneOpt');
       if (scaleLabel) scaleLabel.textContent = t('scale');
@@ -2247,6 +2868,13 @@
       if (nextBtn) nextBtn.title = t('nextTrack');
       if (confirmNo) confirmNo.textContent = t('no');
       if (confirmYes) confirmYes.textContent = t('yes');
+      if (plTrigger) plTrigger.title = t('playlistNamePrompt');
+      if (plNewBtn) plNewBtn.title = t('newPlaylist');
+      if (plRenameBtn) plRenameBtn.title = t('renamePlaylist');
+      if (plExportBtn) plExportBtn.title = t('exportPlaylist');
+      if (plImportBtn) plImportBtn.title = t('importPlaylist');
+      if (plDeleteBtn) plDeleteBtn.title = t('deletePlaylist');
+      renderPlaylistBar();
 
       const isSettingsView = settingsPanel && settingsPanel.classList.contains('is-open');
       if (drawerTitle) drawerTitle.textContent = isSettingsView ? t('settings') : t('search');
@@ -2265,10 +2893,8 @@
 
       if (searchResults && searchResults.length) {
         updateSearchHint(searchResults);
-      } else if (playlist.length) {
-        playlistHint.textContent = tf('playlist', playlist.length);
       } else if (!searchResults) {
-        playlistHint.textContent = t('playlistEmpty');
+        playlistHint.textContent = formatPlaylistHint();
       }
       updateLoadMoreBtn();
       renderList();
@@ -2591,10 +3217,16 @@
     }
 
     async function clearAllTracks() {
+      const active = getActivePlaylist();
       const ok = await confirmDialog(t('confirmClear'));
       if (!ok) return;
-      playlist = [];
+      if (active) {
+        active.tracks = [];
+        active.updatedAt = Date.now();
+      }
+      playlist = active ? active.tracks : [];
       searchResults = null;
+      recState.active = false;
       currentIndex = 0;
       pendingTrack = null;
       savePlaylist();
@@ -2605,14 +3237,16 @@
       } catch (_) {}
       try { stopYt(); } catch (_) {}
       activeEngine = 'sc';
-      hideFloatingLyrics();
+      hideFloatingLyrics(true);
       setStatus('');
       trackTitle.textContent = t('findTrack');
       trackTitle.dataset.placeholder = '1';
       trackArtist.textContent = 'SoundCloud · YouTube';
       setBtnState('play');
-      playlistHint.textContent = t('playlistEmpty');
+      playlistHint.textContent = formatPlaylistHint();
       searchInput.value = '';
+      recState.active = false;
+      renderPlaylistBar();
       renderList();
       updateSystemMediaSession(true);
       settingsHint.textContent = '';
@@ -2663,11 +3297,11 @@
       }
 
       if (!playlist.length) {
-        playlistHint.textContent = t('playlistEmpty');
+        playlistHint.textContent = formatPlaylistHint();
       }
       renderList();
       if (playlist.length) {
-        playlistHint.textContent = tf('playlist', playlist.length);
+        playlistHint.textContent = formatPlaylistHint();
       }
     }
 
@@ -2684,40 +3318,473 @@
       }, 1600);
     });
 
+    if (plTrigger) {
+      plTrigger.addEventListener('click', (e) => {
+        e.stopPropagation();
+        showOwnTracks();
+        togglePlaylistMenu();
+      });
+    }
+
+    if (plMenu) {
+      plMenu.addEventListener('click', (e) => e.stopPropagation());
+    }
+
+    document.addEventListener('click', (e) => {
+      if (!plMenu || !plTrigger) return;
+      if (plMenu.classList.contains('is-open') && !plBar.contains(e.target)) {
+        closePlaylistMenu();
+      }
+    });
+
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') closePlaylistMenu();
+    });
+
+    if (plNewBtn) {
+      plNewBtn.addEventListener('click', () => {
+        const raw = window.prompt(t('playlistNamePrompt'), t('defaultPlaylistName'));
+        if (raw == null) return;
+        const name = raw.trim();
+        createPlaylist(name || undefined);
+        playlistHint.textContent = formatPlaylistHint();
+      });
+    }
+
+    if (plRenameBtn) {
+      plRenameBtn.addEventListener('click', () => {
+        const pl = getActivePlaylist();
+        if (!pl) return;
+        const raw = window.prompt(t('playlistNamePrompt'), pl.name);
+        if (raw == null) return;
+        const name = raw.trim().slice(0, 80);
+        if (!name) return;
+        pl.name = name;
+        pl.updatedAt = Date.now();
+        savePlaylist();
+        renderPlaylistBar();
+        renderList();
+        playlistHint.textContent = formatPlaylistHint();
+      });
+    }
+
+    if (plExportBtn) {
+      plExportBtn.addEventListener('click', exportActivePlaylist);
+    }
+
+    if (plImportBtn) {
+      plImportBtn.addEventListener('click', () => {
+        if (plFileInput) plFileInput.click();
+      });
+    }
+
+    if (plFileInput) {
+      plFileInput.addEventListener('change', () => {
+        const file = plFileInput.files && plFileInput.files[0];
+        if (file) importPlaylistFile(file);
+      });
+    }
+
+    if (plDeleteBtn) {
+      plDeleteBtn.addEventListener('click', async () => {
+        const pl = getActivePlaylist();
+        if (!pl) return;
+        if (playlists.length <= 1) {
+          pl.tracks = [];
+          playlist = pl.tracks;
+          savePlaylist();
+          stopPlaybackUi();
+          currentIndex = 0;
+          renderPlaylistBar();
+          renderList();
+          playlistHint.textContent = formatPlaylistHint();
+          return;
+        }
+        const ok = await confirmDialog(tf('confirmDeletePlaylist', pl.name));
+        if (!ok) return;
+        const idx = playlists.findIndex(p => p.id === pl.id);
+        playlists = playlists.filter(p => p.id !== pl.id);
+        activePlaylistId = (playlists[Math.max(0, idx - 1)] || playlists[0]).id;
+        syncPlaylistRef();
+        currentIndex = 0;
+        searchResults = null;
+        stopPlaybackUi();
+        savePlaylist();
+        renderPlaylistBar();
+        renderList();
+        updateSystemMediaSession(true);
+        playlistHint.textContent = formatPlaylistHint();
+      });
+    }
+
+    function slimTrack(tr) {
+      return {
+        uid: tr.uid,
+        source: tr.source,
+        scId: tr.scId,
+        scUrl: tr.scUrl,
+        scTranscoding: tr.scTranscoding,
+        scTranscodings: tr.scTranscodings,
+        videoId: tr.videoId,
+        title: tr.title,
+        artist: tr.artist,
+        cover: tr.cover,
+        duration: tr.duration
+      };
+    }
+
+    function isValidTrack(item) {
+      return !!(item && item.uid && (item.source === 'sc' || item.source === 'yt'));
+    }
+
+    function makePlaylistId() {
+      return 'pl_' + Date.now().toString(36) + Math.random().toString(36).slice(2, 8);
+    }
+
+    function getActivePlaylist() {
+      return playlists.find(p => p.id === activePlaylistId) || playlists[0] || null;
+    }
+
+    function formatPlaylistHint() {
+      const pl = getActivePlaylist();
+      const n = playlist.length;
+      if (!pl) return tf('playlist', n);
+      return `${pl.name} (${n})`;
+    }
+
+    function showOwnTracks() {
+      const wasOverlay = recState.active || !!(searchResults && searchResults.length);
+      recState.active = false;
+      searchResults = null;
+      if (searchInput) searchInput.value = '';
+      if (wasOverlay) {
+        playlistHint.textContent = formatPlaylistHint();
+        renderList();
+        updateLoadMoreBtn();
+      }
+    }
+
+    function syncPlaylistRef() {
+      const pl = getActivePlaylist();
+      playlist = pl ? pl.tracks : [];
+      if (pl) activePlaylistId = pl.id;
+    }
+
+    function ensurePlaylists() {
+      if (!Array.isArray(playlists) || !playlists.length) {
+        playlists = [{
+          id: makePlaylistId(),
+          name: t('defaultPlaylistName'),
+          tracks: [],
+          createdAt: Date.now(),
+          updatedAt: Date.now()
+        }];
+        activePlaylistId = playlists[0].id;
+      }
+      if (!playlists.some(p => p.id === activePlaylistId)) {
+        activePlaylistId = playlists[0].id;
+      }
+      syncPlaylistRef();
+    }
+
     function savePlaylist() {
       try {
-        const slim = playlist.map(tr => ({
-          uid: tr.uid,
-          source: tr.source,
-          scId: tr.scId,
-          scUrl: tr.scUrl,
-          scTranscoding: tr.scTranscoding,
-          scTranscodings: tr.scTranscodings,
-          videoId: tr.videoId,
-          title: tr.title,
-          artist: tr.artist,
-          cover: tr.cover,
-          duration: tr.duration
-        }));
-        localStorage.setItem(STORAGE_KEY, JSON.stringify(slim));
+        const active = getActivePlaylist();
+        if (active) active.updatedAt = Date.now();
+        const payload = {
+          version: 1,
+          activeId: activePlaylistId,
+          playlists: playlists.map(p => ({
+            id: p.id,
+            name: p.name,
+            createdAt: p.createdAt || Date.now(),
+            updatedAt: p.updatedAt || Date.now(),
+            tracks: (p.tracks || []).map(slimTrack)
+          }))
+        };
+        localStorage.setItem(PLAYLISTS_KEY, JSON.stringify(payload));
+        try {
+          localStorage.setItem(STORAGE_KEY, JSON.stringify((active && active.tracks || []).map(slimTrack)));
+        } catch (_) {}
       } catch (_) {}
     }
 
     function restorePlaylist() {
+      playlists = [];
+      activePlaylistId = '';
       try {
-        const raw = localStorage.getItem(STORAGE_KEY);
-        if (!raw) return;
-        const data = JSON.parse(raw);
-        if (Array.isArray(data)) {
-          playlist = data.filter(item => item && item.uid && (item.source === 'sc' || item.source === 'yt'));
+        const raw = localStorage.getItem(PLAYLISTS_KEY);
+        if (raw) {
+          const data = JSON.parse(raw);
+          if (data && Array.isArray(data.playlists)) {
+            playlists = data.playlists
+              .filter(p => p && p.id && Array.isArray(p.tracks))
+              .map(p => ({
+                id: String(p.id),
+                name: String(p.name || t('defaultPlaylistName')).slice(0, 80),
+                tracks: p.tracks.filter(isValidTrack).map(slimTrack),
+                createdAt: Number(p.createdAt) || Date.now(),
+                updatedAt: Number(p.updatedAt) || Date.now()
+              }));
+            activePlaylistId = data.activeId ? String(data.activeId) : '';
+          }
         }
       } catch (_) {}
+
+      if (!playlists.length) {
+        try {
+          const legacy = localStorage.getItem(STORAGE_KEY);
+          if (legacy) {
+            const arr = JSON.parse(legacy);
+            if (Array.isArray(arr)) {
+              const tracks = arr.filter(isValidTrack).map(slimTrack);
+              playlists = [{
+                id: makePlaylistId(),
+                name: t('defaultPlaylistName'),
+                tracks,
+                createdAt: Date.now(),
+                updatedAt: Date.now()
+              }];
+              activePlaylistId = playlists[0].id;
+              savePlaylist();
+            }
+          }
+        } catch (_) {}
+      }
+
+      ensurePlaylists();
+      renderPlaylistBar();
+    }
+
+    function closePlaylistMenu() {
+      if (!plMenu || !plTrigger) return;
+      plMenu.classList.remove('is-open');
+      plTrigger.setAttribute('aria-expanded', 'false');
+      clearTimeout(plMenuCloseTimer);
+      plMenuCloseTimer = setTimeout(() => {
+        if (!plMenu.classList.contains('is-open')) plMenu.hidden = true;
+      }, 180);
+    }
+
+    function openPlaylistMenu() {
+      if (!plMenu || !plTrigger) return;
+      clearTimeout(plMenuCloseTimer);
+      plMenu.hidden = false;
+      void plMenu.offsetWidth;
+      plMenu.classList.add('is-open');
+      plTrigger.setAttribute('aria-expanded', 'true');
+    }
+
+    function togglePlaylistMenu() {
+      if (!plMenu) return;
+      if (plMenu.classList.contains('is-open')) closePlaylistMenu();
+      else openPlaylistMenu();
+    }
+
+    function renderPlaylistBar() {
+      if (!plMenu) return;
+      const prev = activePlaylistId;
+      if (!playlists.length) ensurePlaylists();
+      plMenu.innerHTML = '';
+      playlists.forEach(pl => {
+        const btn = document.createElement('button');
+        btn.type = 'button';
+        btn.className = 'pl-option' + (pl.id === activePlaylistId ? ' is-active' : '');
+        btn.setAttribute('role', 'option');
+        btn.setAttribute('aria-selected', pl.id === activePlaylistId ? 'true' : 'false');
+        btn.dataset.id = pl.id;
+
+        const name = document.createElement('span');
+        name.className = 'pl-option-name';
+        name.textContent = pl.name;
+
+        const count = document.createElement('span');
+        count.className = 'pl-option-count';
+        count.textContent = String(pl.tracks.length);
+
+        btn.append(name, count);
+        btn.addEventListener('click', () => {
+          closePlaylistMenu();
+          switchPlaylist(pl.id);
+        });
+        plMenu.appendChild(btn);
+      });
+      void prev;
+      if (plDeleteBtn) plDeleteBtn.disabled = playlists.length <= 1;
+      if (plTrigger) {
+        const active = getActivePlaylist();
+        plTrigger.setAttribute('aria-label', active ? active.name : t('playlistNamePrompt'));
+        plTrigger.title = active ? active.name : t('playlistNamePrompt');
+      }
+    }
+
+    function switchPlaylist(id, opts) {
+      const next = playlists.find(p => p.id === id);
+      if (!next) return;
+      const switching = next.id !== activePlaylistId;
+      const options = opts || {};
+      const wasOverlay = recState.active || !!(searchResults && searchResults.length);
+      if (switching) {
+        if (!options.keepPlayback) stopPlaybackUi();
+        activePlaylistId = next.id;
+        syncPlaylistRef();
+        currentIndex = 0;
+        savePlaylist();
+      }
+      searchResults = null;
+      recState.active = false;
+      if (searchInput) searchInput.value = '';
+      if (switching || wasOverlay) {
+        renderPlaylistBar();
+        renderList();
+        if (switching) updateSystemMediaSession(true);
+        playlistHint.textContent = formatPlaylistHint();
+      }
+    }
+
+    function uniquePlaylistName(base) {
+      const root = String(base || t('defaultPlaylistName')).trim().slice(0, 60) || t('defaultPlaylistName');
+      let name = root;
+      let i = 2;
+      const taken = new Set(playlists.map(p => p.name));
+      while (taken.has(name)) {
+        name = `${root} (${i})`;
+        i += 1;
+      }
+      return name;
+    }
+
+    function createPlaylist(name) {
+      const pl = {
+        id: makePlaylistId(),
+        name: uniquePlaylistName(name || t('defaultPlaylistName')),
+        tracks: [],
+        createdAt: Date.now(),
+        updatedAt: Date.now()
+      };
+      playlists.push(pl);
+      activePlaylistId = pl.id;
+      syncPlaylistRef();
+      currentIndex = 0;
+      searchResults = null;
+      savePlaylist();
+      renderPlaylistBar();
+      renderList();
+      playlistHint.textContent = formatPlaylistHint();
+      return pl;
+    }
+
+    function sanitizeFilename(name) {
+      return String(name || 'playlist')
+        .replace(/[\\/:*?"<>|]+/g, '_')
+        .replace(/\s+/g, ' ')
+        .trim()
+        .slice(0, 80) || 'playlist';
+    }
+
+    function exportActivePlaylist() {
+      const pl = getActivePlaylist();
+      if (!pl) return;
+      const payload = {
+        format: ATMOS_FILE_FORMAT,
+        version: 1,
+        name: pl.name,
+        tracks: (pl.tracks || []).map(slimTrack),
+        exportedAt: new Date().toISOString(),
+        app: 'Atmospheres Player'
+      };
+      try {
+        const blob = new Blob([JSON.stringify(payload, null, 2)], { type: 'application/json' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `${sanitizeFilename(pl.name)}.atmospheres`;
+        document.body.appendChild(a);
+        a.click();
+        a.remove();
+        setTimeout(() => URL.revokeObjectURL(url), 1500);
+        playlistHint.textContent = t('playlistExported');
+      } catch (_) {
+        playlistHint.textContent = t('importFailed');
+      }
+    }
+
+    async function importPlaylistFile(file) {
+      if (!file) return;
+      try {
+        const text = await file.text();
+        const data = JSON.parse(text);
+        let name = '';
+        let tracks = [];
+
+        if (data && data.format === ATMOS_FILE_FORMAT && Array.isArray(data.tracks)) {
+          name = data.name;
+          tracks = data.tracks;
+        } else if (Array.isArray(data)) {
+          tracks = data;
+          name = String(file.name || '').replace(/\.atmospheres$/i, '').replace(/\.json$/i, '');
+        } else if (data && Array.isArray(data.playlists)) {
+          let imported = 0;
+          for (const item of data.playlists) {
+            if (!item || !Array.isArray(item.tracks)) continue;
+            const plTracks = item.tracks.filter(isValidTrack).map(slimTrack);
+            const pl = {
+              id: makePlaylistId(),
+              name: uniquePlaylistName(item.name || t('defaultPlaylistName')),
+              tracks: plTracks,
+              createdAt: Date.now(),
+              updatedAt: Date.now()
+            };
+            playlists.push(pl);
+            activePlaylistId = pl.id;
+            imported += 1;
+          }
+          if (!imported) throw new Error('empty');
+          syncPlaylistRef();
+          currentIndex = 0;
+          searchResults = null;
+          savePlaylist();
+          renderPlaylistBar();
+          renderList();
+          playlistHint.textContent = t('playlistImported');
+          return;
+        } else {
+          throw new Error('format');
+        }
+
+        const clean = tracks.filter(isValidTrack).map(slimTrack);
+        if (!clean.length) throw new Error('tracks');
+
+        const pl = {
+          id: makePlaylistId(),
+          name: uniquePlaylistName(name || String(file.name || '').replace(/\.atmospheres$/i, '').replace(/\.json$/i, '') || t('defaultPlaylistName')),
+          tracks: clean,
+          createdAt: Date.now(),
+          updatedAt: Date.now()
+        };
+        playlists.push(pl);
+        activePlaylistId = pl.id;
+        syncPlaylistRef();
+        currentIndex = 0;
+        searchResults = null;
+        if (searchInput) searchInput.value = '';
+        savePlaylist();
+        renderPlaylistBar();
+        renderList();
+        updateSystemMediaSession(true);
+        playlistHint.textContent = t('playlistImported');
+      } catch (_) {
+        playlistHint.textContent = t('importFailed');
+      } finally {
+        if (plFileInput) plFileInput.value = '';
+      }
     }
 
     async function runSearch() {
       const query = searchInput.value.trim();
       if (!query || isSearching) return;
       isSearching = true;
+      recState.active = false;
       searchBtn.disabled = true;
       loadMoreBtn.hidden = true;
       playlistHint.textContent = t('searching');
@@ -2747,6 +3814,7 @@
 
     searchBtn.addEventListener('click', runSearch);
     loadMoreBtn.addEventListener('click', () => { loadMoreResults(); });
+    if (recBtn) recBtn.addEventListener('click', runRecommendations);
     searchInput.addEventListener('keydown', (e) => {
       if (e.key === 'Enter') runSearch();
     });
@@ -2762,14 +3830,14 @@
           playlistContainer.innerHTML = '<div class="empty-hint">' + t('nothingFoundList') + '</div>';
         } else {
           playlistContainer.innerHTML = '<div class="empty-hint">' + t('emptyHint') + '</div>';
-          if (!searchResults) playlistHint.textContent = t('playlistEmpty');
+          if (!searchResults) playlistHint.textContent = formatPlaylistHint();
         }
         updateLoadMoreBtn();
         return;
       }
 
       if (!showingResults) {
-        playlistHint.textContent = tf('playlist', playlist.length);
+        playlistHint.textContent = formatPlaylistHint();
       }
       updateLoadMoreBtn();
 
@@ -2842,6 +3910,7 @@
               currentIndex = playlist.length - 1;
             }
             searchResults = null;
+            recState.active = false;
             searchInput.value = '';
             playSelectedTrack();
             streamDrawer.classList.remove('is-open');
@@ -3354,6 +4423,7 @@
       const token = ++loadToken;
       pendingTrack = track;
       showTrackMeta(track);
+      noteListen(track);
       setBtnState('loading');
       setStatus('');
 
@@ -3512,12 +4582,13 @@
 
     restorePlaylist();
     loadAppSettings();
+    renderPlaylistBar();
     setBtnState('play');
     if (playlist.length > 0) {
       currentIndex = 0;
       showTrackMeta(playlist[0]);
       setBtnState('play');
-      playlistHint.textContent = tf('playlist', playlist.length);
+      playlistHint.textContent = formatPlaylistHint();
     } else {
       trackTitle.textContent = t('findTrack');
       trackTitle.dataset.placeholder = '1';
